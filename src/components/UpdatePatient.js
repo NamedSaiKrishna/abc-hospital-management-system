@@ -5,6 +5,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
@@ -16,6 +17,7 @@ import {
   StateDropdown,
   RegionDropdown,
 } from "react-india-state-region-selector";
+import EditIcon from "@material-ui/icons/Edit";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function AddPatient() {
+function UpdatePatient() {
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -72,14 +74,9 @@ function AddPatient() {
   const classes = useStyles();
   return (
     <div>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleClickOpen}
-        disableElevation
-      >
-        Add Patient
-      </Button>
+      <IconButton onClick={handleClickOpen}>
+        <EditIcon />
+      </IconButton>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -214,4 +211,4 @@ function AddPatient() {
   );
 }
 
-export default AddPatient;
+export default UpdatePatient;

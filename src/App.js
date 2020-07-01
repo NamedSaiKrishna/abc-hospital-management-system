@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {useEffect} from "react";
 import "./App.css";
 import Routes from "./Routes";
 import { Provider } from 'react-redux';
@@ -9,26 +9,22 @@ import { ThemeProvider } from "@material-ui/styles";
 import theme from "./theme";
 import { Provider as AlertProvider } from 'react-alert';
 
-const alertOptions = {
+  const alertOptions = {
   timeout: 5000,
   position: 'bottom center'
 }
 
-export default class App extends Component {
-
-  componentDidMount(){
-    store.dispatch(loadUser());
-  }
-
-  render() {
-    return (
-      <ThemeProvider theme={theme} template={AlertTemplate} {...alertOptions}>
-        <Provider store={store}>
-          <AlertProvider>
-            <Routes />
-          </AlertProvider>
+function App() {
+  useEffect(()=>{store.dispatch(loadUser());}, [])
+  return (
+    <ThemeProvider theme={theme}>
+    <Provider store={store}>
+          <AlertProvider theme={theme} template={AlertTemplate} {...alertOptions}>
+      <Routes />
+    </AlertProvider>
         </Provider>
-      </ThemeProvider>
-    );
-  }
+    </ThemeProvider>
+  );
 }
+
+export default App;
