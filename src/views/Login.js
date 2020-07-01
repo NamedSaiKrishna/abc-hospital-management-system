@@ -1,5 +1,7 @@
-import React from "react";
-
+import React, { useState } from "react";
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { login } from '../redux/actions/auth';
 //MUI
 import { makeStyles } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
@@ -34,8 +36,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Login() {
+const Login = (props) => {
   const classes = useStyles();
+
+  const [state, setState] = useState({});
+  const onChange = (e) => setState({ ...state, [e.target.name]: e.target.value });
+  const onSubmit = (e) => { e.preventDefault(); props.login(state.username, state.password) }
+
   return (
     <div>
       <Container component="main" maxWidth="xs">
@@ -47,7 +54,7 @@ function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form} noValidate onSubmit={onSubmit}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -56,6 +63,7 @@ function Login() {
               id="username"
               label="Username"
               name="username"
+              onChange={onChange}
               autoFocus
             />
             <TextField
@@ -65,6 +73,7 @@ function Login() {
               fullWidth
               name="password"
               label="Password"
+              onChange={onChange}
               type="password"
               id="password"
             />
@@ -89,4 +98,12 @@ function Login() {
   );
 }
 
-export default Login;
+Login.propTypes = {
+  login: PropTypes.func.isRequired
+}
+
+const mapStateToProps = state =>({
+
+})
+
+export default connect(mapStateToProps, {login})(Login);

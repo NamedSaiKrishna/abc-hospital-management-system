@@ -25,7 +25,7 @@ export const loadUser = () => (dispatch, getState) => {
   }
   axios
     .get(
-      `${process.env.REACT_APP_API_URL}/api/users/me/`,
+      `${process.env.REACT_APP_API_URL}/api/users/me`,
       tokenConfig(getState)
     )
     .then((res) => {
@@ -53,7 +53,7 @@ export const login = (username, password) => (dispatch) => {
   const body = JSON.stringify({ username, password });
 
   axios
-    .post(`${process.env.REACT_APP_API_URL}/auth/users/login/`, body, config)
+    .post(`${process.env.REACT_APP_API_URL}/api/users/login`, body, config)
     .then((res) => {
       dispatch({
         type: LOGIN_SUCCESS,

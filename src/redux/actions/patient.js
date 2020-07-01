@@ -38,7 +38,7 @@ export const addMedicinePatient = (medicine, patient, quantity) => (
   const body = JSON.stringify({ medicine, patient, quantity });
 
   axios
-    .post("/api/medicines/", body, tokenConfig(getState))
+    .post(`${process.env.REACT_APP_API_URL}/api/medicines`, body, tokenConfig(getState))
     .then((res) => {
       dispatch({
         type: ADD_MEDICINE_PATIENT,
@@ -64,7 +64,7 @@ export const addDiagnosticPatient = (diagnostic, patient) => (
   const body = JSON.stringify({ diagnostic, patient });
   axios
     .post(
-      `${process.env.REACT_APP_API_URL}/api/diagnostics/`,
+      `${process.env.REACT_APP_API_URL}/api/diagnostics`,
       body,
       tokenConfig(getState)
     )
@@ -163,7 +163,7 @@ export const updatePatient = (b) => (dispatch, getState) => {
 export const getAllPatients = () => (dispatch, getState) => {
   axios
     .get(
-      `${process.env.REACT_APP_API_URL}/api/patients/`,
+      `${process.env.REACT_APP_API_URL}/api/patients`,
       tokenConfig(getState)
     )
     .then((res) => {
