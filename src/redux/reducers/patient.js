@@ -1,4 +1,4 @@
-import {GET_PATIENT} from '../actions/types';
+import { GET_PATIENT } from '../actions/types';
 
 const initialState = {
     address: "",
@@ -16,10 +16,10 @@ const initialState = {
 export default (state = initialState, { type, payload }) => {
     switch (type) {
 
-    case GET_PATIENT:
-        return { ...state, ...payload }
+        case GET_PATIENT:
+            return { ...state, ...payload }
 
-    default:
-        return state
+        default:
+            return state
     }
 }
