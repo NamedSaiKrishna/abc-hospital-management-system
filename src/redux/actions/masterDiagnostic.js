@@ -5,7 +5,7 @@ import { tokenConfig } from './auth';
 
 export const getDiagnosticMaster = () => (dispatch, getState) => {
     
-    axios.get('/api/master-diagnostics/', tokenConfig(getState))
+    axios.get(`${process.env.REACT_APP_API_URL}/api/master-diagnostics/`, tokenConfig(getState))
         .then((res) => {
             dispatch({
                 type: GET_DIAGNOSTIC_MASTER,
@@ -30,7 +30,7 @@ export const addDiagnosticMaster = (name, rate) => (dispatch, getState) => {
 
     const body = JSON.stringify({ name, rate });
 
-    axios.post('/api/master-diagnostics/', body, tokenConfig(getState))
+    axios.post(`${process.env.REACT_APP_API_URL}/api/master-diagnostics/`, body, tokenConfig(getState))
         .then((res) => {
             dispatch({
                 type: ADD_DIAGNOSTIC_MASTER,
@@ -51,7 +51,7 @@ export const addDiagnosticMaster = (name, rate) => (dispatch, getState) => {
 
 export const removeDiagnosticMaster = (id) => (dispatch, getState) => {
 
-    axios.delete(`/api/master-diagnostics/${id}`, tokenConfig(getState))
+    axios.delete(`${process.env.REACT_APP_API_URL}/api/master-diagnostics/${id}`, tokenConfig(getState))
         .then((res) => {
             dispatch({
                 type: REMOVE_DIAGNOSTIC_MASTER,

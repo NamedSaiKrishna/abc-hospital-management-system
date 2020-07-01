@@ -1,6 +1,5 @@
-
-import React, { Component } from "react";
-import Alerts from './components/Alerts';
+import React from "react";
+import Alerts from "./components/Alerts";
 
 //Router
 import {
@@ -20,13 +19,12 @@ import {
 //Components
 import { Navbar } from "./components";
 
-
 function Routes() {
   return (
     <div className="content">
       <Router>
         <Navbar />
-    <Alerts/>
+        <Alerts />
         <Switch>
           <Route exact path="/" component={LoginView} />
           <Route exact path="/dashboard" component={DashboardView} />

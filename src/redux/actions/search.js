@@ -4,7 +4,7 @@ import { tokenConfig } from './auth';
 
 
 export const getSearch = (search) => (dispatch, getState) => {
-    axios.get(`/api/patients/search/${search}`, tokenConfig(getState))
+    axios.get(`${process.env.REACT_APP_API_URL}/api/patients/search/${search}`, tokenConfig(getState))
     .then()
     .catch()
 }
