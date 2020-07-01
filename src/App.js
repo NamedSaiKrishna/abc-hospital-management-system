@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import "./App.css";
 import Routes from "./Routes";
 
@@ -6,12 +6,12 @@ import Routes from "./Routes";
 import { ThemeProvider } from "@material-ui/styles";
 import theme from "./theme";
 
-export default class App extends Component {
-  render() {
-    return (
-      <ThemeProvider theme={theme}>
-        <Routes />
-      </ThemeProvider>
-    );
-  }
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <Routes />
+    </ThemeProvider>
+  );
 }
+
+export default App;

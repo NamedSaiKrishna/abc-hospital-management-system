@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 
 //Router
 import {
@@ -18,20 +18,20 @@ import {
 //Components
 import { Navbar } from "./components";
 
-export default class Routes extends Component {
-  render() {
-    return (
-      <div className="content">
-        <Router>
-          <Navbar />
-          <Switch>
-            <Route exact path="/" component={LoginView} />
-            <Route exact path="/dashboard" component={DashboardView} />
-            <Route component={NotFoundView} exact path="/not-found" />
-            <Redirect to="/not-found" />;
-          </Switch>
-        </Router>
-      </div>
-    );
-  }
+function Routes() {
+  return (
+    <div className="content">
+      <Router>
+        <Navbar />
+        <Switch>
+          <Route exact path="/" component={LoginView} />
+          <Route exact path="/dashboard" component={DashboardView} />
+          <Route component={NotFoundView} exact path="/not-found" />
+          <Redirect to="/not-found" />;
+        </Switch>
+      </Router>
+    </div>
+  );
 }
+
+export default Routes;
