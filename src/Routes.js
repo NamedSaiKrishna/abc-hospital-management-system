@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import Alerts from './components/Alerts';
 //Router
 import {
   BrowserRouter as Router,
@@ -24,6 +24,7 @@ export default class Routes extends Component {
       <div className="content">
         <Router>
           <Navbar />
+          <Alerts/>
           <Switch>
             <Route exact path="/" component={LoginView} />
             <Route exact path="/dashboard" component={DashboardView} />
