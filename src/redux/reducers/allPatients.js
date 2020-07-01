@@ -1,0 +1,19 @@
+import { GET_ALL_PATIENTS, DELETE_PATIENT } from '../actions/types';
+
+const initialState = {
+    result: []
+}
+
+export default (state = initialState, { type, payload }) => {
+    switch (type) {
+
+        case GET_ALL_PATIENTS:
+            return { ...state, result: payload }
+
+        case DELETE_PATIENT:
+            return { ...state, result: (state.result).filter((item) => item.id !== payload) }
+
+        default:
+            return state
+    }
+}
