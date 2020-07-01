@@ -15,9 +15,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import ReceiptIcon from "@material-ui/icons/Receipt";
 
 //Components
 import { AddPatient } from "../components";
@@ -25,6 +23,7 @@ import { AddMedicine } from "../components";
 import { AddDiagnostics } from "../components";
 import { ViewAllPatients } from "../components";
 import { UpdatePatient } from "../components";
+import { BillPatient } from "../components";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -147,9 +146,7 @@ function Dashboard() {
                     </IconButton>
                   </TableCell>
                   <TableCell align="right">
-                    <IconButton>
-                      <ReceiptIcon />
-                    </IconButton>
+                    <BillPatient />
                   </TableCell>
                 </TableRow>
               </TableBody>
