@@ -150,7 +150,7 @@ function UpdatePatient(props) {
                   fullWidth
                   id="admited_on"
                   name="admited_on"
-                  label="DOJ"
+                  label="Admitted Date"
                   type="date"
                   onChange={onChange}
                   value={display}

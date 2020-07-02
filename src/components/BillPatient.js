@@ -120,7 +120,7 @@ function BillPatient(props) {
                         <TableCell align="right">Name</TableCell>
                         <TableCell align="right">Age</TableCell>
                         <TableCell align="right">Address</TableCell>
-                        <TableCell align="right">DOJ</TableCell>
+                        <TableCell align="right">Admitted Date</TableCell>
                         <TableCell align="right">Date Of Discharge</TableCell>
                         <TableCell align="right">Type Of Room</TableCell>
                       </TableRow>

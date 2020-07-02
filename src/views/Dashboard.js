@@ -12,7 +12,10 @@ import {
   getMedicineMaster,
   removeMedicineMaster,
 } from "../redux/actions/masterMedicine";
-import { getDiagnosticMaster, removeDiagnosticMaster } from "../redux/actions/masterDiagnostic";
+import {
+  getDiagnosticMaster,
+  removeDiagnosticMaster,
+} from "../redux/actions/masterDiagnostic";
 
 //MUI
 import {
@@ -80,6 +83,11 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     padding: theme.spacing(2),
   },
+  gpaper: {
+    marginTop: theme.spacing(4),
+    display: "flex",
+    padding: theme.spacing(2),
+  },
 
   mtop: {
     marginTop: theme.spacing(4),
@@ -116,6 +124,13 @@ const useStyles = makeStyles((theme) => ({
   container: {
     maxHeight: 250,
   },
+  ncontainer: {
+    maxHeight: 280,
+  },
+  bspan: {
+    padding: "10px",
+    backgroundColor: "#cfc",
+  },
 }));
 
 const Dashboard = (props) => {
@@ -142,8 +157,7 @@ const Dashboard = (props) => {
     } else if (open[0] === "h") {
       props.removeMedicineMaster(open.slice(1));
       setOpen(false);
-    }
-    else if (open[0] === "t") {
+    } else if (open[0] === "t") {
       props.removeDiagnosticMaster(open.slice(1));
       setOpen(false);
     }
@@ -202,94 +216,157 @@ const Dashboard = (props) => {
               <AddPatient />
             </div>
             <hr className={classes.tandb} />
-            <TableContainer variant="outlined">
-              <Table
-                className={classes.container}
-                aria-label="simple table"
-                size="small"
+            <Typography variant="h5" align="center" className={classes.tandb}>
+              Patient Details
+            </Typography>
+            <Paper className={classes.newPaper} variant="outlined">
+              <TableContainer
+                variant="outlined"
+                className={classes.ncontainer}
+                variant="outlined"
               >
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Patient ID</TableCell>
-                    <TableCell align="right">Name</TableCell>
-                    <TableCell align="right">Age</TableCell>
-                    <TableCell align="right">Address</TableCell>
-                    <TableCell align="right">DOJ</TableCell>
-                    <TableCell align="right">Type Of Room</TableCell>
-                    <TableCell align="right">Update</TableCell>
-                    <TableCell align="right">Delete</TableCell>
-                    <TableCell align="right">Billing</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {!submitted ? (
-                    props.allPatients.map((item) => (
-                      <TableRow key={item.id} style={ item.discharged ? { background: '#fff44f' } : item.fresh? {background: '#00FF7F'} : {}}>
+                <Table
+                  className={classes.table}
+                  aria-label="simple table"
+                  size="small"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Patient ID</TableCell>
+                      <TableCell align="right">Name</TableCell>
+                      <TableCell align="right">Age</TableCell>
+                      <TableCell align="right">Address</TableCell>
+                      <TableCell align="right">Admitted Date</TableCell>
+                      <TableCell align="right">Type Of Room</TableCell>
+                      <TableCell align="right">Update</TableCell>
+                      <TableCell align="right">Delete</TableCell>
+                      <TableCell align="right">Billing</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {!submitted ? (
+                      props.allPatients.map((item) => (
+                        <TableRow
+                          key={item.id}
+                          style={
+                            item.discharged
+                              ? { background: "#fff44f" }
+                              : item.fresh
+                              ? { background: "#00FF7F" }
+                              : {}
+                          }
+                        >
+                          <TableCell component="th" scope="row">
+                            {item.id}
+                          </TableCell>
+                          <TableCell align="right">{item.name}</TableCell>
+                          <TableCell align="right">{item.age}</TableCell>
+                          <TableCell align="right">{item.address}</TableCell>
+                          <TableCell align="right">
+                            {date(item.admited_on)}
+                          </TableCell>
+                          <TableCell align="right">
+                            {item.type_of_bed}
+                          </TableCell>
+                          <TableCell align="right">
+                            <UpdatePatient patient={item} />
+                          </TableCell>
+                          <TableCell align="right">
+                            <IconButton
+                              onClick={() => {
+                                setOpen("p" + item.id);
+                              }}
+                            >
+                              <DeleteForeverIcon />
+                            </IconButton>
+                          </TableCell>
+                          <TableCell align="right">
+                            <BillPatient patient={item} />
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : props.patient.id ? (
+                      <TableRow
+                        key={props.patient.id}
+                        style={
+                          props.patient.discharged
+                            ? { background: "#fff44f" }
+                            : props.patient.fresh
+                            ? { background: "#00FF7F" }
+                            : {}
+                        }
+                      >
                         <TableCell component="th" scope="row">
-                          {item.id}
+                          {props.patient.id}
                         </TableCell>
-                        <TableCell align="right">{item.name}</TableCell>
-                        <TableCell align="right">{item.age}</TableCell>
-                        <TableCell align="right">{item.address}</TableCell>
                         <TableCell align="right">
-                          {date(item.admited_on)}
+                          {props.patient.name}
                         </TableCell>
-                        <TableCell align="right">{item.type_of_bed}</TableCell>
+                        <TableCell align="right">{props.patient.age}</TableCell>
                         <TableCell align="right">
-                          <UpdatePatient patient={item} />
+                          {props.patient.address}
+                        </TableCell>
+                        <TableCell align="right">
+                          {date(props.patient.admited_on)}
+                        </TableCell>
+                        <TableCell align="right">
+                          {props.patient.type_of_bed}
+                        </TableCell>
+                        <TableCell align="right">
+                          <UpdatePatient patient={props.patient} />
                         </TableCell>
                         <TableCell align="right">
                           <IconButton
                             onClick={() => {
-                              setOpen("p" + item.id);
+                              setOpen("p" + props.patient.id);
                             }}
                           >
                             <DeleteForeverIcon />
                           </IconButton>
                         </TableCell>
                         <TableCell align="right">
-                          <BillPatient patient={item} />
+                          <BillPatient patient={props.patient} />
                         </TableCell>
                       </TableRow>
-                    ))
-                  ) : props.patient.id ? (
-                    <TableRow key={props.patient.id} style={ props.patient.discharged ? { background: '#fff44f' } : props.patient.fresh? {background: '#00FF7F'} : {}}>
-                      <TableCell component="th" scope="row">
-                        {props.patient.id}
-                      </TableCell>
-                      <TableCell align="right">{props.patient.name}</TableCell>
-                      <TableCell align="right">{props.patient.age}</TableCell>
-                      <TableCell align="right">
-                        {props.patient.address}
-                      </TableCell>
-                      <TableCell align="right">
-                        {date(props.patient.admited_on)}
-                      </TableCell>
-                      <TableCell align="right">
-                        {props.patient.type_of_bed}
-                      </TableCell>
-                      <TableCell align="right">
-                        <UpdatePatient patient={props.patient} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <IconButton
-                          onClick={() => {
-                            setOpen("p" + props.patient.id);
-                          }}
-                        >
-                          <DeleteForeverIcon />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell align="right">
-                        <BillPatient patient={props.patient} />
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                        <></>
-                      )}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                    ) : (
+                      <></>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+            <Paper variant="outlined" className={classes.gpaper}>
+              <span
+                style={{
+                  backgroundColor: "#00FF7F",
+                  height: "15px",
+                  width: "15px",
+                  marginRight: "1%",
+                }}
+              />
+              New Patient
+              <span
+                style={{
+                  backgroundColor: "#fff44f",
+                  height: "15px",
+                  width: "15px",
+                  marginRight: "1%",
+                  marginLeft: "1%",
+                }}
+              />
+              Discharged
+              <span
+                style={{
+                  backgroundColor: "white",
+                  border: "1px solid grey",
+                  height: "15px",
+                  width: "15px",
+                  marginRight: "1%",
+                  marginLeft: "1%",
+                }}
+              />
+              Exsisting Patient
+            </Paper>
           </Paper>
         </div>
       </React.Fragment>
@@ -338,7 +415,7 @@ const Dashboard = (props) => {
                         <TableCell align="right">Name</TableCell>
                         <TableCell align="right">Age</TableCell>
                         <TableCell align="right">Address</TableCell>
-                        <TableCell align="right">DOJ</TableCell>
+                        <TableCell align="right">Admitted Date</TableCell>
                         <TableCell align="right">Type Of Room</TableCell>
                       </TableRow>
                     </TableHead>
@@ -346,7 +423,16 @@ const Dashboard = (props) => {
                       {!submitted ? (
                         <></>
                       ) : props.patient.id ? (
-                        <TableRow key={props.patient.id} style={ props.patient.discharged ? { background: '#fff44f' } : props.patient.fresh? {background: '#00FF7F'} : {}}>
+                        <TableRow
+                          key={props.patient.id}
+                          style={
+                            props.patient.discharged
+                              ? { background: "#fff44f" }
+                              : props.patient.fresh
+                              ? { background: "#00FF7F" }
+                              : {}
+                          }
+                        >
                           <TableCell component="th" scope="row">
                             {props.patient.id}
                           </TableCell>
@@ -367,8 +453,8 @@ const Dashboard = (props) => {
                           </TableCell>
                         </TableRow>
                       ) : (
-                            <></>
-                          )}
+                        <></>
+                      )}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -399,28 +485,30 @@ const Dashboard = (props) => {
                     </TableHead>
                     <TableBody>
                       {props.patient.medicines.map((item) => (
-                      
-                        <TableRow key={item.id} style={ item.fresh? { background: '#00FF7F' } : {}}>
-                            <TableCell component="th" scope="row">
-                              {item.medicines.name}
-                            </TableCell>
-                            <TableCell align="right">{item.quantity}</TableCell>
-                            <TableCell align="right">
-                              {item.medicines.rate}
-                            </TableCell>
-                            <TableCell align="right">
-                              Rs. {item.quantity * item.medicines.rate}
-                            </TableCell>
-                            <TableCell align="right">
-                              <IconButton
-                                onClick={() => {
-                                  setOpen("m" + item.id);
-                                }}
-                              >
-                                <DeleteForeverIcon />
-                              </IconButton>
-                            </TableCell>
-                          </TableRow>
+                        <TableRow
+                          key={item.id}
+                          style={item.fresh ? { background: "#00FF7F" } : {}}
+                        >
+                          <TableCell component="th" scope="row">
+                            {item.medicines.name}
+                          </TableCell>
+                          <TableCell align="right">{item.quantity}</TableCell>
+                          <TableCell align="right">
+                            {item.medicines.rate}
+                          </TableCell>
+                          <TableCell align="right">
+                            Rs. {item.quantity * item.medicines.rate}
+                          </TableCell>
+                          <TableCell align="right">
+                            <IconButton
+                              onClick={() => {
+                                setOpen("m" + item.id);
+                              }}
+                            >
+                              <DeleteForeverIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
                       ))}
                     </TableBody>
                   </Table>
@@ -452,22 +540,25 @@ const Dashboard = (props) => {
                     </TableHead>
                     <TableBody>
                       {props.master_med.map((item) => (
-                          <TableRow key={item.id} style={ item.fresh? { background: '#00FF7F' } : {}}>
-                            <TableCell component="th" scope="row">
-                              {item.name}
-                            </TableCell>
-                            <TableCell align="right">{item.quantity}</TableCell>
-                            <TableCell align="right">{item.rate}</TableCell>
-                            <TableCell align="right">
-                              <IconButton
-                                onClick={() => {
-                                  setOpen("h" + item.id);
-                                }}
-                              >
-                                <DeleteForeverIcon />
-                              </IconButton>
-                            </TableCell>
-                          </TableRow>
+                        <TableRow
+                          key={item.id}
+                          style={item.fresh ? { background: "#00FF7F" } : {}}
+                        >
+                          <TableCell component="th" scope="row">
+                            {item.name}
+                          </TableCell>
+                          <TableCell align="right">{item.quantity}</TableCell>
+                          <TableCell align="right">{item.rate}</TableCell>
+                          <TableCell align="right">
+                            <IconButton
+                              onClick={() => {
+                                setOpen("h" + item.id);
+                              }}
+                            >
+                              <DeleteForeverIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
                       ))}
                     </TableBody>
                   </Table>
@@ -476,184 +567,263 @@ const Dashboard = (props) => {
               </Paper>
             </Grid>
           </Grid>
+          <Paper variant="outlined" className={classes.gpaper}>
+            <span
+              style={{
+                backgroundColor: "#00FF7F",
+                height: "15px",
+                width: "15px",
+                marginRight: "1%",
+              }}
+            />
+            New Patient
+            <span
+              style={{
+                backgroundColor: "#fff44f",
+                height: "15px",
+                width: "15px",
+                marginRight: "1%",
+                marginLeft: "1%",
+              }}
+            />
+            Discharged
+            <span
+              style={{
+                backgroundColor: "white",
+                border: "1px solid grey",
+                height: "15px",
+                width: "15px",
+                marginRight: "1%",
+                marginLeft: "1%",
+              }}
+            />
+            Exsisting Patient
+          </Paper>
         </Paper>
       </React.Fragment>
     ) : (
-          <React.Fragment>
-            <Paper variant="outlined" className={classes.newPaper}>
-              <Grid container spacing={2} className={classes.root}>
-                <Grid item md={4} sm={12} xs={12}>
-                  <form onSubmit={onSubmit}>
-                    <TextField
-                      id="search"
-                      label="Search"
-                      variant="outlined"
-                      onChange={onChange}
-                      fullWidth
-                      value={search}
-                      className={classes.Input}
-                      required
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton aria-label="search" type="submit">
-                              <SearchIcon />
+      <React.Fragment>
+        <Paper variant="outlined" className={classes.newPaper}>
+          <Grid container spacing={2} className={classes.root}>
+            <Grid item md={4} sm={12} xs={12}>
+              <form onSubmit={onSubmit}>
+                <TextField
+                  id="search"
+                  label="Search"
+                  variant="outlined"
+                  onChange={onChange}
+                  fullWidth
+                  value={search}
+                  className={classes.Input}
+                  required
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton aria-label="search" type="submit">
+                          <SearchIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </form>
+            </Grid>
+            <Grid item md={8} sm={12} xs={12}>
+              <Paper variant="outlined" className={classes.newPaper}>
+                <TableContainer
+                  variant="outlined"
+                  className={classes.container}
+                >
+                  <Table
+                    className={classes.table}
+                    aria-label="simple table"
+                    size="small"
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Patient ID</TableCell>
+                        <TableCell align="right">Name</TableCell>
+                        <TableCell align="right">Age</TableCell>
+                        <TableCell align="right">Address</TableCell>
+                        <TableCell align="right">Admitted Date</TableCell>
+                        <TableCell align="right">Type Of Room</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {!submitted ? (
+                        <></>
+                      ) : props.patient.id ? (
+                        <TableRow
+                          key={props.patient.id}
+                          style={
+                            props.patient.discharged
+                              ? { background: "#fff44f" }
+                              : props.patient.fresh
+                              ? { background: "#00FF7F" }
+                              : {}
+                          }
+                        >
+                          <TableCell component="th" scope="row">
+                            {props.patient.id}
+                          </TableCell>
+                          <TableCell align="right">
+                            {props.patient.name}
+                          </TableCell>
+                          <TableCell align="right">
+                            {props.patient.age}
+                          </TableCell>
+                          <TableCell align="right">
+                            {props.patient.address}
+                          </TableCell>
+                          <TableCell align="right">
+                            {date(props.patient.admited_on)}
+                          </TableCell>
+                          <TableCell align="right">
+                            {props.patient.type_of_bed}
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        <></>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </Grid>
+            <Grid item md={12} sm={12} xs={12}>
+              <hr className={classes.tandb} />
+            </Grid>
+            <Grid item md={6} sm={12} xs={12}>
+              <Typography variant="h6" align="center" className={classes.tandb}>
+                Patient's Diagnostics Chart
+              </Typography>
+              <Paper className={classes.newPaper} variant="outlined">
+                <TableContainer className={classes.container}>
+                  <Table
+                    aria-label="simple table"
+                    size="small"
+                    className={classes.table}
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Name Of The Test</TableCell>
+                        <TableCell align="right">Amount</TableCell>
+                        <TableCell align="right">Remove</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {props.patient.diagnostics.map((item) => (
+                        <TableRow
+                          key={item.id}
+                          style={item.fresh ? { background: "#00FF7F" } : {}}
+                        >
+                          <TableCell component="th" scope="row">
+                            {item.diagnostics.name}
+                          </TableCell>
+                          <TableCell align="right">
+                            Rs. {item.diagnostics.rate}
+                          </TableCell>
+                          <TableCell align="right">
+                            <IconButton
+                              onClick={() => {
+                                setOpen("d" + item.id);
+                              }}
+                            >
+                              <DeleteForeverIcon />
                             </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </form>
-                </Grid>
-                <Grid item md={8} sm={12} xs={12}>
-                  <Paper variant="outlined" className={classes.newPaper}>
-                    <TableContainer
-                      variant="outlined"
-                      className={classes.container}
-                    >
-                      <Table
-                        className={classes.table}
-                        aria-label="simple table"
-                        size="small"
-                      >
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Patient ID</TableCell>
-                            <TableCell align="right">Name</TableCell>
-                            <TableCell align="right">Age</TableCell>
-                            <TableCell align="right">Address</TableCell>
-                            <TableCell align="right">DOJ</TableCell>
-                            <TableCell align="right">Type Of Room</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {!submitted ? (
-                            <></>
-                          )
-                            : props.patient.id ? (
-                              <TableRow key={props.patient.id} style={ props.patient.discharged ? { background: '#fff44f' } : props.patient.fresh? {background: '#00FF7F'} : {}}>
-                                <TableCell component="th" scope="row">
-                                  {props.patient.id}
-                                </TableCell>
-                                <TableCell align="right">
-                                  {props.patient.name}
-                                </TableCell>
-                                <TableCell align="right">
-                                  {props.patient.age}
-                                </TableCell>
-                                <TableCell align="right">
-                                  {props.patient.address}
-                                </TableCell>
-                                <TableCell align="right">
-                                  {date(props.patient.admited_on)}
-                                </TableCell>
-                                <TableCell align="right">
-                                  {props.patient.type_of_bed}
-                                </TableCell>
-                              </TableRow>
-                            ) : (
-                                <></>
-                              )}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Paper>
-                </Grid>
-                <Grid item md={12} sm={12} xs={12}>
-                  <hr className={classes.tandb} />
-                </Grid>
-                <Grid item md={6} sm={12} xs={12}>
-                  <Typography variant="h6" align="center" className={classes.tandb}>
-                    Patient's Diagnostics Chart
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <AddDiagnostics className={classes.tandb} />
+              </Paper>
+            </Grid>
+            <Grid item md={6} sm={12} xs={12}>
+              <Typography variant="h6" align="center" className={classes.tandb}>
+                Diagnostics Available
               </Typography>
-                  <Paper className={classes.newPaper} variant="outlined">
-                    <TableContainer className={classes.container}>
-                      <Table
-                        aria-label="simple table"
-                        size="small"
-                        className={classes.table}
-                      >
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Name Of The Test</TableCell>
-                            <TableCell align="right">Amount</TableCell>
-                            <TableCell align="right">Remove</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {props.patient.diagnostics.map((item) => (
-                              <TableRow key={item.id} style={ item.fresh? { background: '#00FF7F' } : {}}>
-                                <TableCell component="th" scope="row">
-                                  {item.diagnostics.name}
-                                </TableCell>
-                                <TableCell align="right">
-                                  Rs. {item.diagnostics.rate}
-                                </TableCell>
-                                <TableCell align="right">
-                                  <IconButton
-                                    onClick={() => {
-                                      setOpen("d" + item.id);
-                                    }}
-                                  >
-                                    <DeleteForeverIcon />
-                                  </IconButton>
-                                </TableCell>
-                              </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                    <AddDiagnostics className={classes.tandb} />
-                  </Paper>
-                </Grid>
-                <Grid item md={6} sm={12} xs={12}>
-                  <Typography variant="h6" align="center" className={classes.tandb}>
-                    Diagnostics Available
-              </Typography>
-                  <Paper className={classes.newPaper} variant="outlined">
-                    <TableContainer
-                      variant="outlined"
-                      className={classes.container}
-                    >
-                      <Table
-                        aria-label="simple table"
-                        size="small"
-                        className={classes.table}
-                      >
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Name Of Test</TableCell>
-                            <TableCell align="right">Amount</TableCell>
-                            <TableCell align="right">Remove</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {props.diagnostic_master.map((item) => (
-                              <TableRow key={item.id} style={ item.fresh? { background: '#00FF7F' } : {}}>
-                                <TableCell component="th" scope="row">
-                                  {item.name}
-                                </TableCell>
-                                <TableCell align="right">Rs. {item.rate}</TableCell>
-                                <TableCell align="right">
-                                  <IconButton onClick={() => {
-                                    setOpen("t" + item.id);
-                                  }}>
-                                    <DeleteForeverIcon />
-                                  </IconButton>
-                                </TableCell>
-                              </TableRow>
-
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                    <AddNewTest className={classes.tandb} />
-                  </Paper>
-                </Grid>
-              </Grid>
-            </Paper>
-          </React.Fragment>
-        );
+              <Paper className={classes.newPaper} variant="outlined">
+                <TableContainer
+                  variant="outlined"
+                  className={classes.container}
+                >
+                  <Table
+                    aria-label="simple table"
+                    size="small"
+                    className={classes.table}
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Name Of Test</TableCell>
+                        <TableCell align="right">Amount</TableCell>
+                        <TableCell align="right">Remove</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {props.diagnostic_master.map((item) => (
+                        <TableRow
+                          key={item.id}
+                          style={item.fresh ? { background: "#00FF7F" } : {}}
+                        >
+                          <TableCell component="th" scope="row">
+                            {item.name}
+                          </TableCell>
+                          <TableCell align="right">Rs. {item.rate}</TableCell>
+                          <TableCell align="right">
+                            <IconButton
+                              onClick={() => {
+                                setOpen("t" + item.id);
+                              }}
+                            >
+                              <DeleteForeverIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <AddNewTest className={classes.tandb} />
+              </Paper>
+            </Grid>
+          </Grid>
+          <Paper variant="outlined" className={classes.gpaper}>
+            <span
+              style={{
+                backgroundColor: "#00FF7F",
+                height: "15px",
+                width: "15px",
+                marginRight: "1%",
+              }}
+            />
+            New Patient
+            <span
+              style={{
+                backgroundColor: "#fff44f",
+                height: "15px",
+                width: "15px",
+                marginRight: "1%",
+                marginLeft: "1%",
+              }}
+            />
+            Discharged
+            <span
+              style={{
+                backgroundColor: "white",
+                border: "1px solid grey",
+                height: "15px",
+                width: "15px",
+                marginRight: "1%",
+                marginLeft: "1%",
+              }}
+            />
+            Exsisting Patient
+          </Paper>
+        </Paper>
+      </React.Fragment>
+    );
   return (
     <div>
       <Container maxWidth="lg">
@@ -725,7 +895,7 @@ const mapDispatchToProps = {
   getAllPatients,
   deletePatient,
   removeMedicineMaster,
-  removeDiagnosticMaster
+  removeDiagnosticMaster,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
