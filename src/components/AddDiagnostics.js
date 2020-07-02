@@ -80,7 +80,7 @@ function AddDiagnostics() {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Medicine Name"
+                  label="Diagnostics Name"
                   variant="outlined"
                 />
               )}

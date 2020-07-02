@@ -14,10 +14,14 @@ import {
   Login as LoginView,
   NotFound as NotFoundView,
   Dashboard as DashboardView,
+  SignUp as SignUpView
 } from "./views";
 
 //Components
 import { Navbar } from "./components";
+
+//Private route
+import PrivateRoute from './components/PrivateRoute';
 
 function Routes() {
   return (
@@ -27,9 +31,10 @@ function Routes() {
         <Alerts />
         <Switch>
           <Route exact path="/" component={LoginView} />
-          <Route exact path="/dashboard" component={DashboardView} />
+          <Route exact path='/signup' component={SignUpView} />
+          <PrivateRoute exact path="/dashboard" component={DashboardView} />
           <Route component={NotFoundView} exact path="/not-found" />
-          <Redirect to="/not-found" />;
+          <Redirect to="/not-found" />
         </Switch>
       </Router>
     </div>

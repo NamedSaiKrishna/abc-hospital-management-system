@@ -17,7 +17,7 @@ export default (state = initialState, { type, payload }) => {
     switch (type) {
 
         case GET_PATIENT:
-            return { ...state, ...payload }
+            return { ...payload }
 
         case ADD_DIAGNOSTIC_PATIENT:
             return { ...state, diagnostics: [payload, ...state.diagnostics] }

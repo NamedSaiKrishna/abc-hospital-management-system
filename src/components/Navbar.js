@@ -1,5 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { logout } from "../redux/actions/auth";
 
 //MUI
 import { makeStyles } from "@material-ui/styles";
@@ -22,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Navbar() {
+const Navbar = (props) => {
   const classes = useStyles();
   return (
     <div>
@@ -37,20 +40,29 @@ function Navbar() {
             ABC
           </Typography>
           <div className={classes.flexGrow} />
+          { props.isAuthenticated?
+          <>
           <Button
             className={classes.spaceRight}
             color="inherit"
             disableElevation
+            onClick = {()=>{props.logout()}}
           >
             sign out
           </Button>
+          </>:
+          <>
           <Button
             className={classes.spaceRight}
             color="inherit"
             variant="outlined"
+            component={Link}
+            to={'/signup'}
           >
             sign up
           </Button>
+          </>
+          }   
         </Toolbar>
       </AppBar>
       ;
@@ -58,4 +70,12 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+Navbar.propTypes = {
+  isAuthenticated: PropTypes.bool.isRequired
+}
+
+const mapStateToProps = state =>({
+  isAuthenticated: state.auth.isAuthenticated
+})
+
+export default connect(mapStateToProps, {logout})(Navbar);

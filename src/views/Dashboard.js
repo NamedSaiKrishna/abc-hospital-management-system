@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { getPatient } from '../redux/actions/patient';
+import { getMedicineMaster } from '../redux/actions/masterMedicine';
 
 //MUI
 import { makeStyles } from "@material-ui/core";
@@ -16,6 +20,8 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 //Components
 import { AddPatient } from "../components";
@@ -80,11 +86,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Dashboard() {
+const Dashboard = (props) => {
+  useEffect(()=>{
+    if(props.role === "Desk"){
+      
+    }
+    else if(props.role === "Pharmacist")
+    {
+      props.getMedicineMaster();
+    }
+    else{
+
+    }
+  }, [])
   const classes = useStyles();
-  let role = "desk";
+  const [search, setSearch] = useState('');
+  const onChange = (e) => setSearch(e.target.value);
+  const onSubmit = (e) => { e.preventDefault(); props.getPatient(search); }
   let roleDashboard =
-    role === "desk" ? (
+    props.role === "Desk" ? (
       <React.Fragment>
         <div className={classes.row}>
           <span className={classes.spacer} />
@@ -93,12 +113,26 @@ function Dashboard() {
         </div>
         <div className={classes.row}>
           <Paper className={classes.search} variant="outlined">
-            <Input
-              className={classes.input}
-              disableUnderline
-              placeholder="Search Patient ID"
-            />
-            <SearchIcon className={classes.icon} />
+            <form onSubmit={onSubmit}>
+              <TextField
+                id="search"
+                label="Search"
+                variant="outlined"
+                onChange={onChange}
+                fullWidth
+                className={classes.Input}
+                required
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton aria-label="search" type="submit">
+                        <SearchIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </form>
           </Paper>
         </div>
         <div>
@@ -154,16 +188,30 @@ function Dashboard() {
           </TableContainer>
         </div>
       </React.Fragment>
-    ) : role === "pharmacist" ? (
+    ) : props.role === "Pharmacist" ? (
       <React.Fragment>
         <div className={classes.row}>
           <Paper className={classes.search} variant="outlined">
-            <Input
-              className={classes.input}
-              disableUnderline
-              placeholder="Search Patient ID"
-            />
-            <SearchIcon className={classes.icon} />
+            <form onSubmit={onSubmit}>
+              <TextField
+                id="search"
+                label="Search"
+                variant="outlined"
+                onChange={onChange}
+                fullWidth
+                className={classes.Input}
+                required
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton aria-label="search" type="submit">
+                        <SearchIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </form>
           </Paper>
         </div>
         <div>
@@ -176,62 +224,35 @@ function Dashboard() {
                 <Grid container className={classes.root} spacing={2}>
                   <Grid item xs={6}>
                     <Typography variant="subtitle2">Patient Id</Typography>
+                    <Typography varient="caption">{props.patient.id ? props.patient.id : null}</Typography>
                   </Grid>
                   <Grid item xs={6}></Grid>
                   <Grid item xs={6}>
                     <Typography variant="subtitle2">Name</Typography>
+                    <Typography varient="caption">{props.patient.name ? props.patient.name : null}</Typography>
                   </Grid>
                   <Grid item xs={6}></Grid>
                   <Grid item xs={6}>
                     <Typography variant="subtitle2">Age</Typography>
+                    <Typography varient="caption">{props.patient.age ? props.patient.age : null}</Typography>
                   </Grid>
                   <Grid item xs={6}></Grid>
                   <Grid item xs={6}>
                     <Typography variant="subtitle2">Address</Typography>
+                    <Typography varient="caption">{props.patient.address ? props.patient.address : null}</Typography>
                   </Grid>
                   <Grid item xs={6}></Grid>
                   <Grid item xs={6}>
                     <Typography variant="subtitle2">DOJ</Typography>
+                    <Typography varient="caption">{props.patient.admited_on ? props.patient.admited_on : null}</Typography>
                   </Grid>
                   <Grid item xs={6}></Grid>
                   <Grid item xs={6}>
                     <Typography variant="subtitle2">Type Of Room</Typography>
+                    <Typography varient="caption">{props.patient.type_of_bed ? props.patient.type_of_bed : null}</Typography>
                   </Grid>
                   <Grid item xs={6}></Grid>
                 </Grid>
-              </Paper>
-            </Grid>
-            <Grid item xs={4}>
-              <Typography variant="h5" className={classes.mtop}>
-                Medicines Issued
-              </Typography>
-              <Paper className={classes.newPaper} variant="outlined">
-                <TableContainer
-                  variant="outlined"
-                  fullWidth
-                  className={classes.container}
-                >
-                  <Table aria-label="simple table" size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Medicine</TableCell>
-                        <TableCell align="right">Quantity</TableCell>
-                        <TableCell align="right">Rate </TableCell>
-                        <TableCell align="right">Amount</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell component="th" scope="row">
-                          Acebutolol
-                        </TableCell>
-                        <TableCell align="right">10</TableCell>
-                        <TableCell align="right">Rs. 55</TableCell>
-                        <TableCell align="right">Rs. 550</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
               </Paper>
             </Grid>
             <Grid item xs={5}>
@@ -239,7 +260,7 @@ function Dashboard() {
                 Medicines Cart
               </Typography>
               <Paper className={classes.newPaper} variant="outlined">
-                <TableContainer fullWidth className={classes.container}>
+                <TableContainer className={classes.container}>
                   <Table aria-label="simple table" size="small">
                     <TableHead>
                       <TableRow>
@@ -251,144 +272,204 @@ function Dashboard() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      <TableRow>
-                        <TableCell component="th" scope="row">
-                          Acebutolol
+                    {
+                        (props.patient.medicines).map((item) => (
+                          <TableRow key={item.id}>
+                            <TableCell component="th" scope="row">
+                              {item.medicines.name}
                         </TableCell>
-                        <TableCell align="right">10</TableCell>
-                        <TableCell align="right">Rs. 55</TableCell>
-                        <TableCell align="right">Rs. 550</TableCell>
+                        <TableCell align="right">{item.quantity}</TableCell>
+                        <TableCell align="right">{item.medicines.rate}</TableCell>
+                        <TableCell align="right">Rs. {item.quantity*item.medicines.rate}</TableCell>
                         <TableCell align="right">
                           <IconButton>
                             <DeleteForeverIcon />
                           </IconButton>
                         </TableCell>
-                      </TableRow>
+                          </TableRow>
+                        ))
+                      }
                     </TableBody>
                   </Table>
                   <AddMedicine />
                 </TableContainer>
               </Paper>
             </Grid>
+            <Grid item xs={4}>
+              <Typography variant="h5" className={classes.mtop}>
+                Pharmacy
+              </Typography>
+              <Paper className={classes.newPaper} variant="outlined">
+                <TableContainer
+                  variant="outlined"
+
+                  className={classes.container}
+                >
+                  <Table aria-label="simple table" size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Medicine</TableCell>
+                        <TableCell>Quantity</TableCell>
+                        <TableCell>Rate </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {
+                        (props.master_med).map((item) => (
+                          <TableRow key={item.id}>
+                            <TableCell component="th" scope="row">
+                              {item.name}
+                        </TableCell>
+                        <TableCell>{item.quantity}</TableCell>
+                        <TableCell>{item.rate}</TableCell>
+                          </TableRow>
+                        ))
+                      }
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </Grid>
+            
           </Grid>
         </div>
       </React.Fragment>
     ) : (
-      <React.Fragment>
-        <div className={classes.row}>
-          <Paper className={classes.search} variant="outlined">
-            <Input
-              className={classes.input}
-              disableUnderline
-              placeholder="Search Patient ID"
-            />
-            <SearchIcon className={classes.icon} />
-          </Paper>
-        </div>
-        <div>
-          <Grid container className={classes.root} spacing={2}>
-            <Grid item xs={3}>
-              <Typography variant="h5" className={classes.mtop}>
-                Patient Details
-              </Typography>
-              <Paper className={classes.newPaper} variant="outlined">
-                <Grid container className={classes.root} spacing={2}>
-                  <Grid item xs={6}>
-                    <Typography variant="subtitle2">Patient Id</Typography>
-                  </Grid>
-                  <Grid item xs={6}></Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="subtitle2">Name</Typography>
-                  </Grid>
-                  <Grid item xs={6}></Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="subtitle2">Age</Typography>
-                  </Grid>
-                  <Grid item xs={6}></Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="subtitle2">Address</Typography>
-                  </Grid>
-                  <Grid item xs={6}></Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="subtitle2">DOJ</Typography>
-                  </Grid>
-                  <Grid item xs={6}></Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="subtitle2">Type Of Room</Typography>
-                  </Grid>
-                  <Grid item xs={6}></Grid>
-                </Grid>
-              </Paper>
-            </Grid>
-            <Grid item xs={3}>
-              <Typography variant="h5" className={classes.mtop}>
-                Diagnostics Conducted
-              </Typography>
-              <Paper variant="outlined" className={classes.newPaper}>
-                <TableContainer
-                  variant="outlined"
-                  fullWidth
-                  className={classes.container}
-                >
-                  <Table aria-label="simple table" size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Name Of Test</TableCell>
-                        <TableCell align="right">Amount</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell component="th" scope="row">
-                          ECG
-                        </TableCell>
-                        <TableCell align="right">Rs. 3000</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Paper>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="h5" className={classes.mtop}>
-                Diagnostics Cart
-              </Typography>
-              <Paper variant="outlined" className={classes.newPaper}>
-                <TableContainer
-                  variant="outlined"
-                  fullWidth
-                  className={classes.container}
-                >
-                  <Table aria-label="simple table" size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Name Of The test</TableCell>
-                        <TableCell align="right">Amount</TableCell>
-                        <TableCell align="right">Remove</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell component="th" scope="row">
-                          Echo
-                        </TableCell>
-                        <TableCell align="right">Rs. 3000</TableCell>
-                        <TableCell align="right">
-                          <IconButton>
-                            <DeleteForeverIcon />
+          <React.Fragment>
+            <div className={classes.row}>
+              <Paper className={classes.search} variant="outlined">
+                <form onSubmit={onSubmit}>
+                  <TextField
+                    id="search"
+                    label="Search"
+                    variant="outlined"
+                    onChange={onChange}
+                    fullWidth
+                    className={classes.Input}
+                    required
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position='end'>
+                          <IconButton aria-label="search" type="submit">
+                            <SearchIcon />
                           </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <AddDiagnostics />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </form>
               </Paper>
-            </Grid>
-          </Grid>
-        </div>
-      </React.Fragment>
-    );
+            </div>
+            <div>
+              <Grid container className={classes.root} spacing={2}>
+                <Grid item xs={3}>
+                  <Typography variant="h5" className={classes.mtop}>
+                    Patient Details
+              </Typography>
+                  <Paper className={classes.newPaper} variant="outlined">
+                    <Grid container className={classes.root} spacing={2}>
+                      <Grid item xs={6}>
+                        <Typography variant="subtitle2">Patient Id</Typography>
+                        <Typography varient="caption">{props.patient.id ? props.patient.id : null}</Typography>
+                      </Grid>
+                      <Grid item xs={6}></Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="subtitle2">Name</Typography>
+                        <Typography varient="caption">{props.patient.name ? props.patient.name : null}</Typography>
+                      </Grid>
+                      <Grid item xs={6}></Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="subtitle2">Age</Typography>
+                        <Typography varient="caption">{props.patient.age ? props.patient.age : null}</Typography>
+                      </Grid>
+                      <Grid item xs={6}></Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="subtitle2">Address</Typography>
+                        <Typography varient="caption">{props.patient.address ? props.patient.address : null}</Typography>
+                      </Grid>
+                      <Grid item xs={6}></Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="subtitle2">DOJ</Typography>
+                        <Typography varient="caption">{props.patient.admited_on ? props.patient.admited_on : null}</Typography>
+                      </Grid>
+                      <Grid item xs={6}></Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="subtitle2">Type Of Room</Typography>
+                        <Typography varient="caption">{props.patient.type_of_bed ? props.patient.type_of_bed : null}</Typography>
+                      </Grid>
+                      <Grid item xs={6}></Grid>
+                    </Grid>
+                  </Paper>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="h5" className={classes.mtop}>
+                    Diagnostics Conducted
+              </Typography>
+                  <Paper variant="outlined" className={classes.newPaper}>
+                    <TableContainer
+                      variant="outlined"
+
+                      className={classes.container}
+                    >
+                      <Table aria-label="simple table" size="small">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Name Of Test</TableCell>
+                            <TableCell align="right">Amount</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell component="th" scope="row">
+                              ECG
+                        </TableCell>
+                            <TableCell align="right">Rs. 3000</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Paper>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="h5" className={classes.mtop}>
+                    Diagnostics Cart
+              </Typography>
+                  <Paper variant="outlined" className={classes.newPaper}>
+                    <TableContainer
+                      variant="outlined"
+
+                      className={classes.container}
+                    >
+                      <Table aria-label="simple table" size="small">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Name Of The test</TableCell>
+                            <TableCell align="right">Amount</TableCell>
+                            <TableCell align="right">Remove</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell component="th" scope="row">
+                              Echo
+                        </TableCell>
+                            <TableCell align="right">Rs. 3000</TableCell>
+                            <TableCell align="right">
+                              <IconButton>
+                                <DeleteForeverIcon />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    <AddDiagnostics />
+                  </Paper>
+                </Grid>
+              </Grid>
+            </div>
+          </React.Fragment>
+        );
   return (
     <div>
       <Container maxWidth="lg">{roleDashboard}</Container>
@@ -396,4 +477,18 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+Dashboard.propTypes = {
+  role: PropTypes.string.isRequired,
+  getPatient: PropTypes.func.isRequired,
+  patient: PropTypes.object.isRequired,
+  getMedicineMaster: PropTypes.func.isRequired,
+  master_med: PropTypes.array.isRequired,
+}
+
+const mapStateToProps = state => ({
+  role: state.auth.user.role,
+  patient: state.patient,
+  master_med: state.masterMedicine.master,
+})
+
+export default connect(mapStateToProps, { getPatient, getMedicineMaster })(Dashboard);

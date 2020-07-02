@@ -1,11 +1,11 @@
-import { ADD_MEDICINE_MASTER, REMOVE_MEDICINE_MASTER, GET_MEDICINE_MASTER } from './types';
+import { ADD_MEDICINE_MASTER, REMOVE_MEDICINE_MASTER, GET_MEDICINE_MASTER, GET_ERRORS } from './types';
 import axios from 'axios';
 import { tokenConfig } from './auth';
 
 
 export const getMedicineMaster = () => (dispatch, getState) => {
     
-    axios.get(`${process.env.REACT_APP_API_URL}/api/master-medicines`, tokenConfig(getState))
+    axios.get(`${process.env.REACT_APP_API_URL}/api/master-medicines/`, tokenConfig(getState))
         .then((res) => {
             dispatch({
                 type: GET_MEDICINE_MASTER,
@@ -30,7 +30,7 @@ export const addMedicineMaster = (name, quantity, rate) => (dispatch, getState) 
 
     const body = JSON.stringify({ name, quantity, rate });
 
-    axios.post(`${process.env.REACT_APP_API_URL}/api/master-medicines`, body, tokenConfig(getState))
+    axios.post(`${process.env.REACT_APP_API_URL}/api/master-medicines/`, body, tokenConfig(getState))
         .then((res) => {
             dispatch({
                 type: ADD_MEDICINE_MASTER,

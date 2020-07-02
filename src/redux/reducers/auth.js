@@ -1,8 +1,8 @@
-import { USER_LOADING, USER_LOADED, AUTH_ERROR, LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT_USER} from '../actions/types';
+import { USER_LOADING, USER_LOADED, AUTH_ERROR, LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT_USER, REGISTRATION_FAIL, REGISTRATION_SUCCESS } from '../actions/types';
 
 const initialState = {
     token: localStorage.getItem('token'),
-    isAuthenticated: null,
+    isAuthenticated: false,
     isLoading: false,
     user: {
         id: 0,
@@ -13,17 +13,17 @@ const initialState = {
     }
 }
 
-export default function(state = initialState, action){
-    switch(action.type){
-        
+export default function (state = initialState, action) {
+    switch (action.type) {
+
         case USER_LOADING:
-            return{
+            return {
                 ...state,
                 isLoading: true
             }
 
         case USER_LOADED:
-            return{
+            return {
                 ...state,
                 isAuthenticated: true,
                 isLoading: false,
@@ -32,7 +32,7 @@ export default function(state = initialState, action){
 
         case AUTH_ERROR:
             localStorage.removeItem('token')
-            return{
+            return {
                 ...state,
                 token: null,
                 isAuthenticated: false,
@@ -42,17 +42,17 @@ export default function(state = initialState, action){
 
         case LOGIN_FAIL:
             localStorage.removeItem('token')
-            return{
+            return {
                 ...state,
                 token: null,
                 isAuthenticated: false,
                 isLoading: false,
                 user: null,
             }
-        
+
         case LOGIN_SUCCESS:
             localStorage.setItem('token', action.payload.token)
-            return{
+            return {
                 ...state,
                 ...action.payload,
                 isAuthenticated: true,
@@ -61,14 +61,33 @@ export default function(state = initialState, action){
 
         case LOGOUT_USER:
             localStorage.removeItem('token')
-            return{
+            return {
                 ...state,
                 token: null,
                 isAuthenticated: false,
                 isLoading: false,
                 user: null
             }
-        
+
+        case REGISTRATION_FAIL:
+            localStorage.removeItem('token')
+            return {
+                ...state,
+                token: null,
+                isAuthenticated: false,
+                isLoading: false,
+                user: null
+            }
+
+        case REGISTRATION_SUCCESS:
+            localStorage.setItem('token', action.payload.token)
+            return {
+                ...state,
+                ...action.payload,
+                isAuthenticated: true,
+                isLoading: false
+            }
+
 
         default:
             return state

@@ -6,13 +6,14 @@ import {
   REMOVE_MEDICINE_PATIENT,
   GET_ALL_PATIENTS,
   DELETE_PATIENT,
+  GET_ERRORS
 } from "./types";
 import axios from "axios";
 import { tokenConfig } from "./auth";
 
 export const getPatient = (id) => (dispatch, getState) => {
   axios
-    .get(`/api/patients/${id}`, tokenConfig(getState))
+    .get(`${process.env.REACT_APP_API_URL}/api/patients/${id}`, tokenConfig(getState))
     .then((res) => {
       dispatch({
         type: GET_PATIENT,

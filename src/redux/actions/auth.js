@@ -7,6 +7,9 @@ import {
   LOGIN_SUCCESS,
   LOGOUT_USER,
   GET_ERRORS,
+  REGISTRATION_SUCCESS,
+  REGISTRATION_FAIL,
+  GET_MESSAGES
 } from "./types";
 
 export const loadUser = () => (dispatch, getState) => {
@@ -94,8 +97,46 @@ export const tokenConfig = (getState) => {
 
   // If token, add to headers config
   if (token) {
-    config.headers["api-token"] = `Token ${token}`;
+    config.headers["api-token"] = `${token}`;
   }
 
   return config;
 };
+
+export const register = (name, username, password, role) => (dispatch) => {
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const body = JSON.stringify({ username, name, password, role });
+
+  axios
+    .post(`${process.env.REACT_APP_API_URL}/api/users/register`, body, config)
+    .then((res) => {
+      dispatch({
+        type: REGISTRATION_SUCCESS,
+        payload: res.data,
+      });
+      dispatch({
+        type: GET_MESSAGES,
+        payload: "REGISTRATION SUCESSFUL, PLEASE LOGIN"
+      })
+    })
+    .catch((err) => {
+      dispatch({
+        type: REGISTRATION_FAIL,
+      });
+      const error = {
+        msg: err.response.data,
+        status: err.response.status
+      };
+      dispatch({
+        type: GET_ERRORS,
+        payload: error
+      });
+    })
+
+}
