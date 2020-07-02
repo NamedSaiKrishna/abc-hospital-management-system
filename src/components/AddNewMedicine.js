@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -8,10 +8,9 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { addMedicinePatient } from "../redux/actions/patient";
+import { addMedicineMaster } from '../redux/actions/masterMedicine';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -37,23 +36,33 @@ const useStyles = makeStyles((theme) => ({
 
 function AddNewMedicine(props) {
   const [open, setOpen] = useState(false);
-  const [id, setID] = useState(null);
-  const [quantity, setQuantity] = useState(0);
+  const [state, setState] = useState({
+    name: '',
+    quantity: 0,
+    rate: 0
+  })
   const handleClickOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
   };
-  const onChange = (event, newValue) => {
-    if (newValue != null) {
-      setID(newValue.id);
-    }
-  };
+  const onChange = (e) => { setState({ ...state, [e.target.name]: e.target.value }) };
   const onSubmit = (e) => {
     e.preventDefault();
-    props.addMedicinePatient(id, props.patient_id, quantity);
+    props.addMedicineMaster(state);
   };
+
+  useEffect(() => {
+
+    return () => {
+      setState({
+        name: '',
+        quantity: 0,
+        rate: 0
+      })
+    }
+  }, [])
 
   const classes = useStyles();
   return (
@@ -66,7 +75,7 @@ function AddNewMedicine(props) {
         fullWidth
         className={classes.mtop}
       >
-        Add New Medicine
+        Add Stock
       </Button>
       <Dialog
         fullWidth
@@ -81,20 +90,17 @@ function AddNewMedicine(props) {
             <DialogContentText>Add Medicine Here</DialogContentText>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
-                <Autocomplete
-                  size="small"
+                <TextField
+                  variant="outlined"
+                  required
                   fullWidth
-                  id="combo-box-demo"
-                  options={props.master_med}
+                  id="name"
+                  label="Name"
+                  name="name"
+                  size="small"
+                  type="text"
+                  value={state.name}
                   onChange={onChange}
-                  getOptionLabel={(option) => option.name}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Medicine Name"
-                      variant="outlined"
-                    />
-                  )}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -107,10 +113,8 @@ function AddNewMedicine(props) {
                   name="quantity"
                   size="small"
                   type="number"
-                  value={quantity}
-                  onChange={(e) => {
-                    setQuantity(e.target.value);
-                  }}
+                  value={state.quantity}
+                  onChange={onChange}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -123,9 +127,8 @@ function AddNewMedicine(props) {
                   name="rate"
                   size="small"
                   type="number"
-                  onChange={(e) => {
-                    setQuantity(e.target.value);
-                  }}
+                  onChange={onChange}
+                  value={state.rate}
                 />
               </Grid>
             </Grid>
@@ -151,14 +154,10 @@ function AddNewMedicine(props) {
 }
 
 AddNewMedicine.propTypes = {
-  master_med: PropTypes.array.isRequired,
-  addMedicinePatient: PropTypes.func.isRequired,
-  patient_id: PropTypes.number.isRequired,
+  addMedicineMaster: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  master_med: state.masterMedicine.master,
-  patient_id: state.patient.id,
 });
 
-export default connect(mapStateToProps, { addMedicinePatient })(AddNewMedicine);
+export default connect(mapStateToProps, { addMedicineMaster })(AddNewMedicine);

@@ -6,9 +6,8 @@ import patient from './patient';
 import allPatients from './allPatients';
 import masterDiagnostic from './masterDiagnostic';
 import masterMedicine from './masterMedicine';
-import search from './search';
 
-export default combineReducers({
+const rootReducer = combineReducers({
     auth,
     errors,
     messages,
@@ -16,5 +15,8 @@ export default combineReducers({
     allPatients,
     masterDiagnostic,
     masterMedicine,
-    search
-})
+    
+});
+
+
+export default (state, action) => rootReducer(action.type === 'LOGOUT_USER' ? undefined : state, action);

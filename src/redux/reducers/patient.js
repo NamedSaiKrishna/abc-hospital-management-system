@@ -1,4 +1,4 @@
-import { GET_PATIENT, ADD_DIAGNOSTIC_PATIENT, ADD_MEDICINE_PATIENT, REMOVE_DIAGNOSTIC_PATIENT, REMOVE_MEDICINE_PATIENT, CLEAR_PATIENT } from '../actions/types';
+import { GET_PATIENT, ADD_DIAGNOSTIC_PATIENT, ADD_MEDICINE_PATIENT, REMOVE_DIAGNOSTIC_PATIENT, REMOVE_MEDICINE_PATIENT, CLEAR_PATIENT, UPDATE_PATIENT_MEDICINE_LIST, UPDATE_PATIENT_DIAGNOSTIC_LIST } from '../actions/types';
 
 const initialState = {
     address: "",
@@ -30,6 +30,12 @@ export default (state = initialState, { type, payload }) => {
 
         case REMOVE_MEDICINE_PATIENT:
             return { ...state, medicines: (state.medicines).filter((item) => item.id !== Number(payload))}
+
+        case UPDATE_PATIENT_MEDICINE_LIST:
+            return { ...state, medicines: (state.medicines).filter((item)=> item.medicine !== Number(payload))}
+
+        case UPDATE_PATIENT_DIAGNOSTIC_LIST:
+            return { ...state, diagnostics: (state.diagnostics).filter((item)=> item.diagnostic !== Number(payload))}
 
         case CLEAR_PATIENT:
             return {initialState}

@@ -1,4 +1,4 @@
-import { ADD_DIAGNOSTIC_MASTER, REMOVE_DIAGNOSTIC_MASTER, GET_DIAGNOSTIC_MASTER, GET_ERRORS } from './types';
+import { ADD_DIAGNOSTIC_MASTER, REMOVE_DIAGNOSTIC_MASTER, GET_DIAGNOSTIC_MASTER, GET_ERRORS, UPDATE_PATIENT_DIAGNOSTIC_LIST, GET_MESSAGES } from './types';
 import axios from 'axios';
 import { tokenConfig } from './auth';
 
@@ -35,7 +35,11 @@ export const addDiagnosticMaster = (name, rate) => (dispatch, getState) => {
             dispatch({
                 type: ADD_DIAGNOSTIC_MASTER,
                 payload: res.data
-            })
+            });
+            dispatch({
+                type: GET_MESSAGES,
+                payload: "ADDED"
+            });
         })
         .catch((err) => {
             const error = {
@@ -56,7 +60,15 @@ export const removeDiagnosticMaster = (id) => (dispatch, getState) => {
             dispatch({
                 type: REMOVE_DIAGNOSTIC_MASTER,
                 payload: id
-            })
+            });
+            dispatch({
+                type: UPDATE_PATIENT_DIAGNOSTIC_LIST,
+                payload: id
+            });
+            dispatch({
+                type: GET_MESSAGES,
+                payload: "DELETED"
+            });
         })
         .catch((err) => {
             const error = {

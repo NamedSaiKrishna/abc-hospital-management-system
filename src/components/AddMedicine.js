@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -39,7 +39,15 @@ const useStyles = makeStyles((theme) => ({
 function AddMedicine(props) {
   const [open, setOpen] = useState(false);
   const [id, setID] = useState(null);
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  useEffect(() => {
+    
+    return () => {
+      setQuantity(1);
+      setOpen(false);
+      setID(null);
+    }
+  }, []);
   const handleClickOpen = () => {
     setOpen(true);
   };

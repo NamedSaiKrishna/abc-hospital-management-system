@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -43,7 +43,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function AddPatient(props) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [display, setDisplay] = useState();
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -70,10 +71,28 @@ function AddPatient(props) {
     state: "",
   });
 
+  useEffect(() => {
+
+    return () => {
+      setState({
+        ssn: 0,
+        name: "",
+        age: 0,
+        admited_on: null,
+        type_of_bed: "",
+        address: "",
+        city: "",
+        state: "",
+      });
+      setOpen(false);
+    }
+  }, [])
+
   const onChange = (e) => {
     if (e.target.name === "admited_on") {
       let d = dayjs(e.target.value);
       setState({ ...state, [e.target.name]: d.utc().format() });
+      setDisplay(e.target.value);
       return;
     }
     setState({ ...state, [e.target.name]: e.target.value });
@@ -170,7 +189,7 @@ function AddPatient(props) {
                   label="DOJ"
                   type="date"
                   onChange={onChange}
-                  value={state.admited_on}
+                  value={display}
                   className={classes.textField}
                   InputLabelProps={{
                     shrink: true,

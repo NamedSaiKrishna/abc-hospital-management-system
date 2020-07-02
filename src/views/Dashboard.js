@@ -8,7 +8,7 @@ import {
   getAllPatients,
   deletePatient,
 } from "../redux/actions/patient";
-import { getMedicineMaster } from "../redux/actions/masterMedicine";
+import { getMedicineMaster, removeMedicineMaster } from "../redux/actions/masterMedicine";
 import { getDiagnosticMaster } from "../redux/actions/masterDiagnostic";
 
 //MUI
@@ -44,6 +44,9 @@ import { AddNewMedicine } from "../components";
 import { AddDiagnostics } from "../components";
 import { UpdatePatient } from "../components";
 import { BillPatient } from "../components";
+import dayjs from "dayjs";
+var utc = require("dayjs/plugin/utc");
+dayjs.extend(utc);
 
 const useStyles = makeStyles((theme) => ({
   tandb: {
@@ -131,7 +134,16 @@ const Dashboard = (props) => {
       props.deletePatient(open.slice(1));
       setOpen(false);
     }
+    else if(open[0] === "h") {
+      props.removeMedicineMaster(open.slice(1))
+      setOpen(false);
+    }
   };
+
+  const date = (utc_format) =>{
+    let d = dayjs(utc_format);
+    return d.local().format()
+  }
 
   const classes = useStyles();
   const [search, setSearch] = useState("");
@@ -210,7 +222,7 @@ const Dashboard = (props) => {
                         <TableCell align="right">{item.name}</TableCell>
                         <TableCell align="right">{item.age}</TableCell>
                         <TableCell align="right">{item.address}</TableCell>
-                        <TableCell align="right">{item.admited_on}</TableCell>
+                        <TableCell align="right">{date(item.admited_on)}</TableCell>
                         <TableCell align="right">{item.type_of_bed}</TableCell>
                         <TableCell align="right">
                           <UpdatePatient patient={item} />
@@ -370,7 +382,7 @@ const Dashboard = (props) => {
             </Grid>
             <Grid item md={6} sm={12} xs={12}>
               <Typography variant="h6" align="center" className={classes.tandb}>
-                Medicines Cart
+                Patient's Medicine Chart
               </Typography>
               <Paper className={classes.newPaper} variant="outlined">
                 <TableContainer className={classes.container}>
@@ -420,7 +432,7 @@ const Dashboard = (props) => {
             </Grid>
             <Grid item md={6} sm={12} xs={12}>
               <Typography variant="h6" align="center" className={classes.tandb}>
-                Pharmacy
+                Pharmacy Stock
               </Typography>
               <Paper className={classes.newPaper} variant="outlined">
                 <TableContainer
@@ -449,7 +461,9 @@ const Dashboard = (props) => {
                           <TableCell align="right">{item.quantity}</TableCell>
                           <TableCell align="right">{item.rate}</TableCell>
                           <TableCell align="right">
-                            <IconButton>
+                            <IconButton onClick={() => {
+                                setOpen("h" + item.id);
+                              }}>
                               <DeleteForeverIcon />
                             </IconButton>
                           </TableCell>
@@ -692,6 +706,7 @@ const mapDispatchToProps = {
   getDiagnosticMaster,
   getAllPatients,
   deletePatient,
+  removeMedicineMaster
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

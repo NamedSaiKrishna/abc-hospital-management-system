@@ -45,7 +45,8 @@ const useStyles = makeStyles((theme) => ({
 
 function UpdatePatient(props) {
   const patient = props.patient;
-  const [open, setOpen] = React.useState(false);
+  const [display, setDisplay] = useState();
+  const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -76,6 +77,7 @@ function UpdatePatient(props) {
     {
       let d = dayjs(e.target.value)
       setState({ ...state, [e.target.name]: d.utc().format() });
+      setDisplay(e.target.value);
       return;
     }
     setState({ ...state, [e.target.name]: e.target.value }) 
@@ -151,7 +153,7 @@ function UpdatePatient(props) {
                   label="DOJ"
                   type="date"
                   onChange={onChange}
-                  value={state.admited_on}
+                  value={display}
                   className={classes.textField}
                   InputLabelProps={{
                     shrink: true,

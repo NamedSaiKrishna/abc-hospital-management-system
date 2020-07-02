@@ -17,6 +17,19 @@ import axios from "axios";
 import { tokenConfig } from "./auth";
 
 export const getPatient = (id) => (dispatch, getState) => {
+
+  if (isNaN(id)) {
+    const error = {
+      msg: "Enter a valid ID",
+      status: 10401,
+    };
+    dispatch({
+      type: GET_ERRORS,
+      payload: error
+    });
+    return;
+  }
+
   axios
     .get(`${process.env.REACT_APP_API_URL}/api/patients/${id}`, tokenConfig(getState))
     .then((res) => {
@@ -41,6 +54,19 @@ export const addMedicinePatient = (medicine, patient, quantity) => (
   dispatch,
   getState
 ) => {
+
+  if (quantity <= 0) {
+    const error = {
+      msg: "Enter a valid quantity",
+      status: 10401,
+    };
+    dispatch({
+      type: GET_ERRORS,
+      payload: error
+    });
+    return;
+  }
+
   const body = JSON.stringify({ medicine, patient, quantity });
 
   axios
@@ -174,6 +200,10 @@ export const updatePatient = (b, id) => (dispatch, getState) => {
         payload: res.data,
       });
       dispatch({
+        type: GET_PATIENT,
+        payload: res.data
+      });
+      dispatch({
         type: GET_MESSAGES,
         payload: "UPDATED"
       });
@@ -247,27 +277,27 @@ export const deletePatient = (id) => (dispatch, getState) => {
 };
 
 
-export const addPatient = (data) => (dispatch, getState) =>{
+export const addPatient = (data) => (dispatch, getState) => {
   const body = JSON.stringify(data);
   axios.post(`${process.env.REACT_APP_API_URL}/api/patients/`, body, tokenConfig(getState))
-  .then((res)=>{
-    dispatch({
-      type: ADD_PATIENT,
-      payload: res.data
-    });
-    dispatch({
-      type: GET_MESSAGES,
-      payload: "ADDED"
-    });
-  })
-  .catch((err)=>{
-    const error = {
-      msg: err.response.data,
-      status: err.response.status,
-    };
-    dispatch({
-      type: GET_ERRORS,
-      payload: error,
-    });
-  })
+    .then((res) => {
+      dispatch({
+        type: ADD_PATIENT,
+        payload: res.data
+      });
+      dispatch({
+        type: GET_MESSAGES,
+        payload: "ADDED"
+      });
+    })
+    .catch((err) => {
+      const error = {
+        msg: err.response.data,
+        status: err.response.status,
+      };
+      dispatch({
+        type: GET_ERRORS,
+        payload: error,
+      });
+    })
 }
