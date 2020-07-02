@@ -217,6 +217,9 @@ function BillPatient() {
           >
             Confirm
           </Button>
+          <Button onClick={handleClose} color="primary" variant="outlined">
+            Print Bill
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

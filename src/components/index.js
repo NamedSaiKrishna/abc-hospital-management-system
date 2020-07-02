@@ -6,3 +6,4 @@ export { default as AddDiagnostics } from "./AddDiagnostics";
 export { default as ViewAllPatients } from "./ViewAllPatients";
 export { default as UpdatePatient } from "./UpdatePatient";
 export { default as BillPatient } from "./BillPatient";
+export { default as AddNewTest } from "./AddNewTest";

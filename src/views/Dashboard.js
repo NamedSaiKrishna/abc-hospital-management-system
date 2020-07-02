@@ -8,7 +8,10 @@ import {
   getAllPatients,
   deletePatient,
 } from "../redux/actions/patient";
-import { getMedicineMaster, removeMedicineMaster } from "../redux/actions/masterMedicine";
+import {
+  getMedicineMaster,
+  removeMedicineMaster,
+} from "../redux/actions/masterMedicine";
 import { getDiagnosticMaster } from "../redux/actions/masterDiagnostic";
 
 //MUI
@@ -44,7 +47,10 @@ import { AddNewMedicine } from "../components";
 import { AddDiagnostics } from "../components";
 import { UpdatePatient } from "../components";
 import { BillPatient } from "../components";
+import { AddNewTest } from "../components";
+
 import dayjs from "dayjs";
+
 var utc = require("dayjs/plugin/utc");
 dayjs.extend(utc);
 
@@ -133,17 +139,16 @@ const Dashboard = (props) => {
     } else if (open[0] === "p") {
       props.deletePatient(open.slice(1));
       setOpen(false);
-    }
-    else if(open[0] === "h") {
-      props.removeMedicineMaster(open.slice(1))
+    } else if (open[0] === "h") {
+      props.removeMedicineMaster(open.slice(1));
       setOpen(false);
     }
   };
 
-  const date = (utc_format) =>{
+  const date = (utc_format) => {
     let d = dayjs(utc_format);
-    return d.local().format()
-  }
+    return d.local().format();
+  };
 
   const classes = useStyles();
   const [search, setSearch] = useState("");
@@ -222,7 +227,9 @@ const Dashboard = (props) => {
                         <TableCell align="right">{item.name}</TableCell>
                         <TableCell align="right">{item.age}</TableCell>
                         <TableCell align="right">{item.address}</TableCell>
-                        <TableCell align="right">{date(item.admited_on)}</TableCell>
+                        <TableCell align="right">
+                          {date(item.admited_on)}
+                        </TableCell>
                         <TableCell align="right">{item.type_of_bed}</TableCell>
                         <TableCell align="right">
                           <UpdatePatient patient={item} />
@@ -461,9 +468,11 @@ const Dashboard = (props) => {
                           <TableCell align="right">{item.quantity}</TableCell>
                           <TableCell align="right">{item.rate}</TableCell>
                           <TableCell align="right">
-                            <IconButton onClick={() => {
+                            <IconButton
+                              onClick={() => {
                                 setOpen("h" + item.id);
-                              }}>
+                              }}
+                            >
                               <DeleteForeverIcon />
                             </IconButton>
                           </TableCell>
@@ -480,100 +489,115 @@ const Dashboard = (props) => {
       </React.Fragment>
     ) : (
       <React.Fragment>
-        <div className={classes.row}>
-          <Paper className={classes.search} variant="outlined">
-            <form onSubmit={onSubmit}>
-              <TextField
-                id="search"
-                label="Search"
-                variant="outlined"
-                onChange={onChange}
-                fullWidth
-                className={classes.Input}
-                required
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton aria-label="search" type="submit">
-                        <SearchIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </form>
-          </Paper>
-        </div>
-        <div>
-          <Grid container className={classes.root} spacing={2}>
-            <Grid item xs={3}>
-              <Typography variant="h5" className={classes.mtop}>
-                Patient Details
-              </Typography>
-              <Paper className={classes.newPaper} variant="outlined">
-                <Grid container className={classes.root} spacing={2}>
-                  <Grid item xs={6}>
-                    <Typography variant="subtitle2">Patient Id</Typography>
-                    <Typography varient="caption">
-                      {props.patient.id ? props.patient.id : null}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}></Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="subtitle2">Name</Typography>
-                    <Typography varient="caption">
-                      {props.patient.name ? props.patient.name : null}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}></Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="subtitle2">Age</Typography>
-                    <Typography varient="caption">
-                      {props.patient.age ? props.patient.age : null}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}></Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="subtitle2">Address</Typography>
-                    <Typography varient="caption">
-                      {props.patient.address ? props.patient.address : null}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}></Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="subtitle2">DOJ</Typography>
-                    <Typography varient="caption">
-                      {props.patient.admited_on
-                        ? props.patient.admited_on
-                        : null}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}></Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="subtitle2">Type Of Room</Typography>
-                    <Typography varient="caption">
-                      {props.patient.type_of_bed
-                        ? props.patient.type_of_bed
-                        : null}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}></Grid>
-                </Grid>
-              </Paper>
+        <Paper variant="outlined" className={classes.newPaper}>
+          <Grid container spacing={2} className={classes.root}>
+            <Grid item md={4} sm={12} xs={12}>
+              <form onSubmit={onSubmit}>
+                <TextField
+                  id="search"
+                  label="Search"
+                  variant="outlined"
+                  onChange={onChange}
+                  fullWidth
+                  className={classes.Input}
+                  required
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton aria-label="search" type="submit">
+                          <SearchIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </form>
             </Grid>
-            <Grid item xs={6}>
-              <Typography variant="h5" className={classes.mtop}>
-                Diagnostics Cart
-              </Typography>
+            <Grid item md={8} sm={12} xs={12}>
               <Paper variant="outlined" className={classes.newPaper}>
                 <TableContainer
                   variant="outlined"
                   className={classes.container}
                 >
-                  <Table aria-label="simple table" size="small">
+                  <Table
+                    className={classes.table}
+                    aria-label="simple table"
+                    size="small"
+                  >
                     <TableHead>
                       <TableRow>
-                        <TableCell>Name Of The test</TableCell>
+                        <TableCell>Patient ID</TableCell>
+                        <TableCell align="right">Name</TableCell>
+                        <TableCell align="right">Age</TableCell>
+                        <TableCell align="right">Address</TableCell>
+                        <TableCell align="right">DOJ</TableCell>
+                        <TableCell align="right">Type Of Room</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {!submitted ? (
+                        props.allPatients.map((item) => (
+                          <TableRow key={item.id}>
+                            <TableCell component="th" scope="row">
+                              {item.id}
+                            </TableCell>
+                            <TableCell align="right">{item.name}</TableCell>
+                            <TableCell align="right">{item.age}</TableCell>
+                            <TableCell align="right">{item.address}</TableCell>
+                            <TableCell align="right">
+                              {item.admited_on}
+                            </TableCell>
+                            <TableCell align="right">
+                              {item.type_of_bed}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : props.patient.id ? (
+                        <TableRow key={props.patient.id}>
+                          <TableCell component="th" scope="row">
+                            {props.patient.id}
+                          </TableCell>
+                          <TableCell align="right">
+                            {props.patient.name}
+                          </TableCell>
+                          <TableCell align="right">
+                            {props.patient.age}
+                          </TableCell>
+                          <TableCell align="right">
+                            {props.patient.address}
+                          </TableCell>
+                          <TableCell align="right">
+                            {props.patient.admited_on}
+                          </TableCell>
+                          <TableCell align="right">
+                            {props.patient.type_of_bed}
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        <></>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </Grid>
+            <Grid item md={12} sm={12} xs={12}>
+              <hr className={classes.tandb} />
+            </Grid>
+            <Grid item md={6} sm={12} xs={12}>
+              <Typography variant="h6" align="center" className={classes.tandb}>
+                Patient's Diagnostics Chart
+              </Typography>
+              <Paper className={classes.newPaper} variant="outlined">
+                <TableContainer className={classes.container}>
+                  <Table
+                    aria-label="simple table"
+                    size="small"
+                    className={classes.table}
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Name Of The Test</TableCell>
                         <TableCell align="right">Amount</TableCell>
                         <TableCell align="right">Remove</TableCell>
                       </TableRow>
@@ -601,23 +625,28 @@ const Dashboard = (props) => {
                     </TableBody>
                   </Table>
                 </TableContainer>
-                <AddDiagnostics />
+                <AddDiagnostics className={classes.tandb} />
               </Paper>
             </Grid>
-            <Grid item xs={3}>
-              <Typography variant="h5" className={classes.mtop}>
+            <Grid item md={6} sm={12} xs={12}>
+              <Typography variant="h6" align="center" className={classes.tandb}>
                 Diagnostics Available
               </Typography>
-              <Paper variant="outlined" className={classes.newPaper}>
+              <Paper className={classes.newPaper} variant="outlined">
                 <TableContainer
                   variant="outlined"
                   className={classes.container}
                 >
-                  <Table aria-label="simple table" size="small">
+                  <Table
+                    aria-label="simple table"
+                    size="small"
+                    className={classes.table}
+                  >
                     <TableHead>
                       <TableRow>
                         <TableCell>Name Of Test</TableCell>
                         <TableCell align="right">Amount</TableCell>
+                        <TableCell align="right">Remove</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -627,15 +656,21 @@ const Dashboard = (props) => {
                             {item.name}
                           </TableCell>
                           <TableCell align="right">Rs. {item.rate}</TableCell>
+                          <TableCell align="right">
+                            <IconButton>
+                              <DeleteForeverIcon />
+                            </IconButton>
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
+                <AddNewTest className={classes.tandb} />
               </Paper>
             </Grid>
           </Grid>
-        </div>
+        </Paper>
       </React.Fragment>
     );
   return (
@@ -706,7 +741,7 @@ const mapDispatchToProps = {
   getDiagnosticMaster,
   getAllPatients,
   deletePatient,
-  removeMedicineMaster
+  removeMedicineMaster,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
