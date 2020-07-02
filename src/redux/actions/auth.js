@@ -122,7 +122,7 @@ export const register = (name, username, password, role) => (dispatch) => {
       });
       dispatch({
         type: GET_MESSAGES,
-        payload: "REGISTRATION SUCESSFUL, PLEASE LOGIN"
+        payload: "REGISTRATION SUCESSFUL"
       })
     })
     .catch((err) => {

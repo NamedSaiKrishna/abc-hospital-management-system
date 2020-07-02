@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -45,9 +45,13 @@ const useStyles = makeStyles((theme) => ({
 
 const SignUp = (props) => {
   const classes = useStyles();
-  const [state, setState] = useState({name: '', username: '', password: '', role: ''});
+  const [state, setState] = useState({ name: '', username: '', password: '', role: '' });
   const onChange = (e) => setState({ ...state, [e.target.name]: e.target.value });
   const onSubmit = (e) => { e.preventDefault(); props.register(state.name, state.username, state.password, state.role) }
+
+  if (props.auth.isAuthenticated) {
+    return <Redirect to="/dashboard" />
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -150,7 +154,7 @@ SignUp.propTypes = {
 }
 
 const mapStateToProps = state => ({
-
+  auth: state.auth
 })
 
-export default connect(mapStateToProps, {register})(SignUp);
+export default connect(mapStateToProps, { register })(SignUp);
