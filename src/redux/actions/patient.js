@@ -7,7 +7,11 @@ import {
   GET_ALL_PATIENTS,
   DELETE_PATIENT,
   GET_ERRORS,
-  GET_MESSAGES
+  GET_MESSAGES,
+  UPDATE_MEDICINE,
+  CLEAR_PATIENT,
+  ADD_PATIENT,
+  UPDATE_PATIENT
 } from "./types";
 import axios from "axios";
 import { tokenConfig } from "./auth";
@@ -44,6 +48,10 @@ export const addMedicinePatient = (medicine, patient, quantity) => (
     .then((res) => {
       dispatch({
         type: ADD_MEDICINE_PATIENT,
+        payload: res.data,
+      });
+      dispatch({
+        type: UPDATE_MEDICINE,
         payload: res.data,
       });
       dispatch({
@@ -152,18 +160,22 @@ export const removeDiagnosticPatient = (id) => (dispatch, getState) => {
     });
 };
 
-export const updatePatient = (b) => (dispatch, getState) => {
+export const updatePatient = (b, id) => (dispatch, getState) => {
   const body = JSON.stringify(b);
   axios
     .put(
-      `${process.env.REACT_APP_API_URL}/api/patients/${b.id}`,
+      `${process.env.REACT_APP_API_URL}/api/patients/${id}`,
       body,
       tokenConfig(getState)
     )
     .then((res) => {
       dispatch({
-        type: GET_PATIENT,
+        type: UPDATE_PATIENT,
         payload: res.data,
+      });
+      dispatch({
+        type: GET_MESSAGES,
+        payload: "UPDATED"
       });
     })
     .catch((err) => {
@@ -181,7 +193,7 @@ export const updatePatient = (b) => (dispatch, getState) => {
 export const getAllPatients = () => (dispatch, getState) => {
   axios
     .get(
-      `${process.env.REACT_APP_API_URL}/api/patients`,
+      `${process.env.REACT_APP_API_URL}/api/patients/`,
       tokenConfig(getState)
     )
     .then((res) => {
@@ -213,6 +225,14 @@ export const deletePatient = (id) => (dispatch, getState) => {
         type: DELETE_PATIENT,
         payload: id,
       });
+      dispatch({
+        type: CLEAR_PATIENT,
+        payload: id,
+      })
+      dispatch({
+        type: GET_MESSAGES,
+        payload: "DELETED"
+      });
     })
     .catch((err) => {
       const error = {
@@ -225,3 +245,29 @@ export const deletePatient = (id) => (dispatch, getState) => {
       });
     });
 };
+
+
+export const addPatient = (data) => (dispatch, getState) =>{
+  const body = JSON.stringify(data);
+  axios.post(`${process.env.REACT_APP_API_URL}/api/patients/`, body, tokenConfig(getState))
+  .then((res)=>{
+    dispatch({
+      type: ADD_PATIENT,
+      payload: res.data
+    });
+    dispatch({
+      type: GET_MESSAGES,
+      payload: "ADDED"
+    });
+  })
+  .catch((err)=>{
+    const error = {
+      msg: err.response.data,
+      status: err.response.status,
+    };
+    dispatch({
+      type: GET_ERRORS,
+      payload: error,
+    });
+  })
+}

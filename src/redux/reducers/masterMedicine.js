@@ -1,4 +1,4 @@
-import { GET_MEDICINE_MASTER, ADD_MEDICINE_MASTER, REMOVE_MEDICINE_MASTER } from '../actions/types';
+import { GET_MEDICINE_MASTER, ADD_MEDICINE_MASTER, REMOVE_MEDICINE_MASTER, UPDATE_MEDICINE } from '../actions/types';
 
 
 const initialState = {
@@ -12,10 +12,13 @@ export default (state = initialState, { type, payload }) => {
             return { ...state, master: payload }
 
         case ADD_MEDICINE_MASTER:
-            return {...state, master: [payload, ...state.master]}
+            return { ...state, master: [payload, ...state.master] }
 
         case REMOVE_MEDICINE_MASTER:
-            return {...state, master: (state.master).filter((item)=> item.id != payload)}
+            return { ...state, master: (state.master).filter((item) => item.id !== Number(payload)) }
+
+        case UPDATE_MEDICINE:
+            return { ...state, master: (state.master).map((item) => { if (item.id === payload.medicine) { return ({ ...item, quantity: (item.quantity - payload.quantity) }) } else { return (item); } }) }
 
         default:
             return state

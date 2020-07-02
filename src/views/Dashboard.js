@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getPatient, removeMedicinePatient, removeDiagnosticPatient } from '../redux/actions/patient';
+import { getPatient, removeMedicinePatient, removeDiagnosticPatient, getAllPatients, deletePatient } from '../redux/actions/patient';
 import { getMedicineMaster } from '../redux/actions/masterMedicine';
 import { getDiagnosticMaster } from '../redux/actions/masterDiagnostic';
 
@@ -12,7 +12,6 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
-import Input from "@material-ui/core/Input";
 import SearchIcon from "@material-ui/icons/Search";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -23,12 +22,12 @@ import TableRow from "@material-ui/core/TableRow";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import CachedIcon from '@material-ui/icons/Cached';
 
 //Components
 import { AddPatient } from "../components";
 import { AddMedicine } from "../components";
 import { AddDiagnostics } from "../components";
-import { ViewAllPatients } from "../components";
 import { UpdatePatient } from "../components";
 import { BillPatient } from "../components";
 
@@ -90,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = (props) => {
   useEffect(() => {
     if (props.role === "Desk") {
-
+      props.getAllPatients();
     }
     else if (props.role === "Pharmacist") {
       props.getMedicineMaster();
@@ -109,19 +108,23 @@ const Dashboard = (props) => {
       props.removeDiagnosticPatient(open.slice(1));
       setOpen(false);
     }
+    else if (open[0] === "p"){
+      props.deletePatient(open.slice(1));
+      setOpen(false);
+    }
   }
 
   const classes = useStyles();
   const [search, setSearch] = useState('');
+  const [submitted, setSubmitted] = useState(false);
   const [open, setOpen] = React.useState(false);
   const onChange = (e) => setSearch(e.target.value);
-  const onSubmit = (e) => { e.preventDefault(); props.getPatient(search); }
+  const onSubmit = (e) => { e.preventDefault(); props.getPatient(search); setSubmitted(true);}
   let roleDashboard =
     props.role === "Desk" ? (
       <React.Fragment>
         <div className={classes.row}>
           <span className={classes.spacer} />
-          <ViewAllPatients />
           <AddPatient />
         </div>
         <div className={classes.row}>
@@ -146,6 +149,9 @@ const Dashboard = (props) => {
                 }}
               />
             </form>
+            <IconButton onClick={()=>{setSubmitted(false);}}>
+              <CachedIcon/>
+            </IconButton>
           </Paper>
         </div>
         <div>
@@ -173,29 +179,58 @@ const Dashboard = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    123456789
-                  </TableCell>
-                  <TableCell align="right">Joseph</TableCell>
-                  <TableCell align="right">56</TableCell>
-                  <TableCell align="right">
-                    Rick Street, Ameerpet, Hyderabad
-                  </TableCell>
-                  <TableCell align="right">03-may-2020</TableCell>
-                  <TableCell align="right">Single</TableCell>
-                  <TableCell align="right">
-                    <UpdatePatient />
-                  </TableCell>
-                  <TableCell align="right">
-                    <IconButton>
-                      <DeleteForeverIcon />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell align="right">
-                    <BillPatient />
-                  </TableCell>
-                </TableRow>
+                {!submitted ?
+                  (props.allPatients).map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell component="th" scope="row">
+                        {item.id}
+                      </TableCell>
+                      <TableCell align="right">{item.name}</TableCell>
+                      <TableCell align="right">{item.age}</TableCell>
+                      <TableCell align="right">
+                        {item.address}
+                      </TableCell>
+                      <TableCell align="right">{item.admited_on}</TableCell>
+                      <TableCell align="right">{item.type_of_bed}</TableCell>
+                      <TableCell align="right">
+                        <UpdatePatient patient={item}/>
+                      </TableCell>
+                      <TableCell align="right">
+                        <IconButton onClick={() => { setOpen("p" + item.id) }}>
+                          <DeleteForeverIcon />
+                        </IconButton>
+                      </TableCell>
+                      <TableCell align="right">
+                        <BillPatient />
+                      </TableCell>
+                    </TableRow>
+                  )) :
+                   props.patient.id ?
+                  (<TableRow key={props.patient.id}>
+                    <TableCell component="th" scope="row">
+                      {props.patient.id}
+                    </TableCell>
+                    <TableCell align="right">{props.patient.name}</TableCell>
+                    <TableCell align="right">{props.patient.age}</TableCell>
+                    <TableCell align="right">
+                      {props.patient.address}
+                    </TableCell>
+                    <TableCell align="right">{props.patient.admited_on}</TableCell>
+                    <TableCell align="right">{props.patient.type_of_bed}</TableCell>
+                    <TableCell align="right">
+                      <UpdatePatient patient={props.patient}/>
+                    </TableCell>
+                    <TableCell align="right">
+                      <IconButton onClick={() => { setOpen("p" + props.patient.id) }}>
+                        <DeleteForeverIcon />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="right">
+                      <BillPatient />
+                    </TableCell>
+                  </TableRow>
+                  ):<></>
+                }
               </TableBody>
             </Table>
           </TableContainer>
@@ -435,17 +470,17 @@ const Dashboard = (props) => {
                         <TableBody>
                           {
                             (props.patient.diagnostics).map((item) => (
-                            <TableRow key={item.id}>
-                              <TableCell component="th" scope="row">
-                                {item.diagnostics.name}
-                        </TableCell>
-                              <TableCell align="right">Rs. {item.diagnostics.rate}</TableCell>
-                              <TableCell align="right">
-                                <IconButton  onClick={() => { setOpen("d" + item.id) }}>
-                                  <DeleteForeverIcon />
-                                </IconButton>
-                              </TableCell>
-                            </TableRow>
+                              <TableRow key={item.id}>
+                                <TableCell component="th" scope="row">
+                                  {item.diagnostics.name}
+                                </TableCell>
+                                <TableCell align="right">Rs. {item.diagnostics.rate}</TableCell>
+                                <TableCell align="right">
+                                  <IconButton onClick={() => { setOpen("d" + item.id) }}>
+                                    <DeleteForeverIcon />
+                                  </IconButton>
+                                </TableCell>
+                              </TableRow>
                             ))
                           }
                         </TableBody>
@@ -534,6 +569,9 @@ Dashboard.propTypes = {
   removeDiagnosticPatient: PropTypes.func.isRequired,
   getDiagnosticMaster: PropTypes.func.isRequired,
   diagnostic_master: PropTypes.array.isRequired,
+  getAllPatients: PropTypes.func.isRequired,
+  allPatients: PropTypes.array.isRequired,
+  deletePatient: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -541,6 +579,17 @@ const mapStateToProps = state => ({
   patient: state.patient,
   master_med: state.masterMedicine.master,
   diagnostic_master: state.masterDiagnostic.master,
+  allPatients: state.allPatients.result
 })
 
-export default connect(mapStateToProps, { getPatient, getMedicineMaster, removeMedicinePatient, removeDiagnosticPatient, getDiagnosticMaster })(Dashboard);
+const mapDispatchToProps = {
+  getPatient,
+  getMedicineMaster,
+  removeMedicinePatient,
+  removeDiagnosticPatient,
+  getDiagnosticMaster,
+  getAllPatients,
+  deletePatient,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

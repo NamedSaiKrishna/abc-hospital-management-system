@@ -1,4 +1,4 @@
-import { GET_ALL_PATIENTS, DELETE_PATIENT } from '../actions/types';
+import { GET_ALL_PATIENTS, DELETE_PATIENT, ADD_PATIENT, UPDATE_PATIENT } from '../actions/types';
 
 const initialState = {
     result: []
@@ -11,7 +11,13 @@ export default (state = initialState, { type, payload }) => {
             return { ...state, result: payload }
 
         case DELETE_PATIENT:
-            return { ...state, result: (state.result).filter((item) => item.id !== payload) }
+            return { ...state, result: (state.result).filter((item) => item.id !== Number(payload)) }
+
+        case ADD_PATIENT:
+            return { ...state, result: [...state.result, payload]}
+
+        case UPDATE_PATIENT:
+            return { ...state, result: (state.result).map((item)=>{if(item.id === payload.id){return(payload);}else{return(item);}})}
 
         default:
             return state

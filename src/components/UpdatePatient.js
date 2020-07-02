@@ -1,11 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
@@ -13,11 +11,18 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 import {
   StateDropdown,
   RegionDropdown,
 } from "react-india-state-region-selector";
-import EditIcon from "@material-ui/icons/Edit";
+import { connect } from 'react-redux';
+import { updatePatient } from '../redux/actions/patient';
+import PropTypes from 'prop-types';
+import dayjs from 'dayjs';
+var utc = require('dayjs/plugin/utc');
+dayjs.extend(utc);
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -38,7 +43,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function UpdatePatient() {
+function UpdatePatient(props) {
+  const patient = props.patient;
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -46,30 +52,35 @@ function UpdatePatient() {
   const handleClose = () => {
     setOpen(false);
   };
-  const [age, setAge] = React.useState("");
-  const [room, setRoom] = React.useState("");
-
-  const handleAgeChange = (event) => {
-    setAge(event.target.value);
-  };
-  const handleRoomChange = (event) => {
-    setRoom(event.target.value);
-  };
-
-  const handleMultiChange = (event) => {
-    setValue(event.target.value);
-  };
-  const [value, setValue] = React.useState("");
-  const [State, ssetState] = React.useState("");
-  const [region, setRegion] = React.useState("");
 
   const selectState = (val) => {
-    ssetState(val);
+    setState({...state, state: val});
   };
 
   const selectRegion = (val) => {
-    setRegion(val);
+    setState({...state, city: val});
   };
+
+  const [state, setState] = useState({
+    name: patient.name,
+    age: patient.age,
+    admited_on: patient.admited_on,
+    type_of_bed: patient.type_of_bed,
+    address: patient.address,
+    city: patient.city,
+    state: patient.state
+  });
+
+  const onChange = (e) => { 
+    if(e.target.name === "admited_on")
+    {
+      let d = dayjs(e.target.value)
+      setState({ ...state, [e.target.name]: d.utc().format() });
+      return;
+    }
+    setState({ ...state, [e.target.name]: e.target.value }) 
+  }
+  const onSubmit = (e) => { e.preventDefault(); props.updatePatient(state, patient.id);}
 
   const classes = useStyles();
   return (
@@ -83,51 +94,35 @@ function UpdatePatient() {
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">Patient Registration</DialogTitle>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={onSubmit}>
           <DialogContent>
-            <DialogContentText>
-              To subscribe to this website, please enter your email address
-              here. We will send updates occasionally.
-            </DialogContentText>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  name="ssnId"
                   variant="outlined"
                   required
                   fullWidth
-                  id="ssnId"
-                  label="SSN ID"
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="patientName"
+                  id="name"
                   label="Patient Name"
-                  name="patientName"
+                  name="name"
                   size="small"
+                  onChange={onChange}
+                  value={state.name}
                 />
               </Grid>
               <Grid item xs={2}>
                 <FormControl variant="outlined" size="small" fullWidth>
-                  <InputLabel id="demo-simple-select-outlined-label">
-                    Age
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-outlined-label"
-                    id="demo-simple-select-outlined"
-                    value={age}
-                    onChange={handleAgeChange}
+                  <TextField
                     label="Age"
-                  >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
-                  </Select>
+                    required
+                    variant="outlined"
+                    size="small"
+                    id="age"
+                    name="age"
+                    type="number"
+                    onChange={onChange}
+                    value={state.age}
+                  />
                 </FormControl>
               </Grid>
               <Grid item xs={6}>
@@ -135,48 +130,56 @@ function UpdatePatient() {
                   <InputLabel id="type-of-room-label">Type Of Room</InputLabel>
                   <Select
                     labelId="type-of-room-label"
-                    id="type-of-room"
-                    value={room}
-                    onChange={handleRoomChange}
+                    id="type_of_bed"
+                    name="type_of_bed"
+                    value={state.type_of_bed}
+                    onChange={onChange}
                     label="Type Of Room"
+                    required
                   >
-                    <MenuItem value={10}>Single</MenuItem>
-                    <MenuItem value={20}>Shared</MenuItem>
-                    <MenuItem value={30}>General</MenuItem>
+                    <MenuItem value={'Single'}>Single</MenuItem>
+                    <MenuItem value={'Shared'}>Shared</MenuItem>
+                    <MenuItem value={'General'}>General</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
               <Grid item xs={4}>
                 <TextField
                   fullWidth
-                  id="date"
+                  id="admited_on"
+                  name="admited_on"
                   label="DOJ"
                   type="date"
+                  onChange={onChange}
+                  value={state.admited_on}
                   className={classes.textField}
                   InputLabelProps={{
                     shrink: true,
                   }}
                   variant="outlined"
                   size="small"
+                  required
                 />
               </Grid>
               <Grid item xs={8}>
                 <TextField
-                  id="outlined-multiline-flexible"
+                  id="address"
+                  name="address"
                   label="Address"
                   multiline
                   rowsMax={2}
-                  value={value}
-                  onChange={handleMultiChange}
+                  value={state.address}
+                  onChange={onChange}
                   variant="outlined"
                   size="small"
                   fullWidth
+                  required
                 />
               </Grid>
               <Grid item xs={4}>
                 <FormControl variant="outlined" size="small" fullWidth>
                   <StateDropdown
-                    value={State}
+                    value={state.state}
                     onChange={(val) => selectState(val)}
                   />
                 </FormControl>
@@ -184,8 +187,8 @@ function UpdatePatient() {
               <Grid item xs={4}>
                 <FormControl fullWidth>
                   <RegionDropdown
-                    State={State}
-                    value={region}
+                    State={state.state}
+                    value={state.city}
                     onChange={(val) => selectRegion(val)}
                   />
                 </FormControl>
@@ -201,6 +204,7 @@ function UpdatePatient() {
               color="primary"
               variant="contained"
               disableElevation
+              type="submit"
             >
               submit
             </Button>
@@ -211,4 +215,9 @@ function UpdatePatient() {
   );
 }
 
-export default UpdatePatient;
+UpdatePatient.propTypes ={
+  updatePatient: PropTypes.func.isRequired,
+  patient: PropTypes.object.isRequired,
+} 
+
+export default connect(null, {updatePatient})(UpdatePatient);

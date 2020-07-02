@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -36,14 +36,17 @@ const useStyles = makeStyles((theme) => ({
 
 
 function AddDiagnostics(props) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [id, setID] = useState(null);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
   };
-  const onSubmit = (e) => { e.preventDefault(); props.addDiagnosticPatient(props.patient_id); }
+  const onChange = (event, newValue) => { if (newValue != null) { setID(newValue.id); } }
+  const onSubmit = (e) => { e.preventDefault(); props.addDiagnosticPatient(id, props.patient_id); }
 
   const classes = useStyles();
   return (
@@ -55,7 +58,7 @@ function AddDiagnostics(props) {
         disableElevation
         fullWidth
         className={classes.mtop}
-        disabled = {!props.patient_id}
+        disabled={!props.patient_id}
       >
         Add Diagnostics
       </Button>
@@ -75,7 +78,8 @@ function AddDiagnostics(props) {
               fullWidth
               id="combo-box-demo"
               options={props.diagnostic_master}
-              getOptionLabel={(option) => option.title}
+              onChange={onChange}
+              getOptionLabel={(option) => option.name}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -116,4 +120,4 @@ const mapStateToProps = (state) => ({
   diagnostic_master: state.masterDiagnostic.master,
 })
 
-export default connect(mapStateToProps, {addDiagnosticPatient})(AddDiagnostics);
+export default connect(mapStateToProps, { addDiagnosticPatient })(AddDiagnostics);

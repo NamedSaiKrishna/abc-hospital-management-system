@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -37,14 +37,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function AddMedicine(props) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [id, setID] = useState(null);
+  const [quantity, setQuantity] = useState(0);
   const handleClickOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
   };
-  const onSubmit = (e) => { e.preventDefault(); props.addMedicinePatient(props.patient_id); }
+  const onChange = (event, newValue) => { if (newValue != null) { setID(newValue.id); } }
+  const onSubmit = (e) => { e.preventDefault(); props.addMedicinePatient(id, props.patient_id, quantity); }
 
   const classes = useStyles();
   return (
@@ -78,6 +81,7 @@ function AddMedicine(props) {
                   fullWidth
                   id="combo-box-demo"
                   options={props.master_med}
+                  onChange={onChange}
                   getOptionLabel={(option) => option.name}
                   renderInput={(params) => (
                     <TextField
@@ -98,6 +102,8 @@ function AddMedicine(props) {
                   name="quantity"
                   size="small"
                   type="number"
+                  value={quantity}
+                  onChange={(e)=>{setQuantity(e.target.value)}}
                 />
               </Grid>
             </Grid>

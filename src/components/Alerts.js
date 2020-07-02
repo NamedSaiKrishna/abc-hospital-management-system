@@ -21,6 +21,12 @@ export class Alerts extends Component {
         if(error.msg.role) alert.error("ROLE: "+error.msg.role.join());
         if(error.msg.quantity) alert.error("QUANTITY: "+error.msg.quantity.join());
         if(error.msg.medicines) alert.error("MEDICINE: "+error.msg.medicines.join());
+        if(error.msg.ssn) alert.error("SSN: "+error.msg.ssn.join());
+        if(error.msg.admited_on) alert.error("Admited on: "+error.msg.admited_on.join());
+        if(error.msg.address)alert.error("Address: "+error.msg.address.join());
+        if(error.msg.state)alert.error("State: "+error.msg.state.join());
+        if(error.msg.city)alert.error("City: "+error.msg.city.join());
+        if(error.msg.age)alert.error("AGE: "+error.msg.age.join());
         }
 
         if(messages !== prevProps.messages){
