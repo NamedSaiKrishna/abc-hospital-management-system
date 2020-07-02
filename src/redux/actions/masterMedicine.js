@@ -41,7 +41,7 @@ export const addMedicineMaster = (data) => (dispatch, getState) => {
         });
         return;
     }
-    if (data.price <= 0) {
+    if (data.rate <= 0) {
         const error = {
             msg: "Please enter a valid price",
             status: 10401

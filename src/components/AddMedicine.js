@@ -69,7 +69,7 @@ function AddMedicine(props) {
         className={classes.mtop}
         disabled = {!props.patient_id}
       >
-        Add Medicine
+        Issue Medicine
       </Button>
       <Dialog
         fullWidth
@@ -78,10 +78,10 @@ function AddMedicine(props) {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Add Medicines</DialogTitle>
+        <DialogTitle id="form-dialog-title">Issue Medicines</DialogTitle>
         <form className={classes.form} noValidate onSubmit={onSubmit}>
           <DialogContent>
-            <DialogContentText>Add Medicine Here</DialogContentText>
+            <DialogContentText>Issue Medicine Here</DialogContentText>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <Autocomplete
@@ -91,6 +91,7 @@ function AddMedicine(props) {
                   options={props.master_med}
                   onChange={onChange}
                   getOptionLabel={(option) => option.name}
+                  getOptionSelected={option => option.id}
                   renderInput={(params) => (
                     <TextField
                       {...params}

@@ -61,7 +61,7 @@ const Login = (props) => {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Typography variant="caption1">
+          <Typography variant="caption">
             Continue to your Respective Dept
           </Typography>
           <form className={classes.form} noValidate onSubmit={onSubmit}>

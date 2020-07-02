@@ -142,7 +142,7 @@ const Dashboard = (props) => {
     } else {
       props.getDiagnosticMaster();
     }
-  }, [props]);
+  }, []);// eslint-disable-line react-hooks/exhaustive-deps
 
   const onConfirm = () => {
     if (open[0] === "m") {
@@ -343,7 +343,7 @@ const Dashboard = (props) => {
                   marginRight: "1%",
                 }}
               />
-              New Patient
+              New/Updated Entry
               <span
                 style={{
                   backgroundColor: "#fff44f",
@@ -353,7 +353,7 @@ const Dashboard = (props) => {
                   marginLeft: "1%",
                 }}
               />
-              Discharged
+              Discharged Patient
               <span
                 style={{
                   backgroundColor: "white",
@@ -364,7 +364,7 @@ const Dashboard = (props) => {
                   marginLeft: "1%",
                 }}
               />
-              Exsisting Patient
+              Exsisting Entry
             </Paper>
           </Paper>
         </div>
@@ -575,7 +575,7 @@ const Dashboard = (props) => {
                 marginRight: "1%",
               }}
             />
-            New Patient
+            New/Updated Entry
             <span
               style={{
                 backgroundColor: "#fff44f",
@@ -585,7 +585,7 @@ const Dashboard = (props) => {
                 marginLeft: "1%",
               }}
             />
-            Discharged
+            Discharged Patient
             <span
               style={{
                 backgroundColor: "white",
@@ -596,7 +596,7 @@ const Dashboard = (props) => {
                 marginLeft: "1%",
               }}
             />
-            Exsisting Patient
+            Exsisting Entry
           </Paper>
         </Paper>
       </React.Fragment>
@@ -797,7 +797,7 @@ const Dashboard = (props) => {
                 marginRight: "1%",
               }}
             />
-            New Patient
+            New/Updated Entry
             <span
               style={{
                 backgroundColor: "#fff44f",
@@ -807,7 +807,7 @@ const Dashboard = (props) => {
                 marginLeft: "1%",
               }}
             />
-            Discharged
+            Discharged Patient
             <span
               style={{
                 backgroundColor: "white",
@@ -818,7 +818,7 @@ const Dashboard = (props) => {
                 marginLeft: "1%",
               }}
             />
-            Exsisting Patient
+            Exsisting Entry
           </Paper>
         </Paper>
       </React.Fragment>
