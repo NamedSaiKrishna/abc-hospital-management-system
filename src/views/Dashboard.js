@@ -142,7 +142,7 @@ const Dashboard = (props) => {
     } else {
       props.getDiagnosticMaster();
     }
-  }, []);
+  }, [props]);
 
   const onConfirm = () => {
     if (open[0] === "m") {
@@ -223,7 +223,6 @@ const Dashboard = (props) => {
               <TableContainer
                 variant="outlined"
                 className={classes.ncontainer}
-                variant="outlined"
               >
                 <Table
                   className={classes.table}
