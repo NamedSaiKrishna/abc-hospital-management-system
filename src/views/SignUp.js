@@ -17,6 +17,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { register } from '../redux/actions/auth';
 import Paper from '@material-ui/core/Paper';
+import { Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
