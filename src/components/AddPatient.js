@@ -16,11 +16,11 @@ import {
   StateDropdown,
   RegionDropdown,
 } from "react-india-state-region-selector";
-import { connect } from 'react-redux';
-import { addPatient } from '../redux/actions/patient';
-import PropTypes from 'prop-types';
-import dayjs from 'dayjs';
-var utc = require('dayjs/plugin/utc');
+import { connect } from "react-redux";
+import { addPatient } from "../redux/actions/patient";
+import PropTypes from "prop-types";
+import dayjs from "dayjs";
+var utc = require("dayjs/plugin/utc");
 dayjs.extend(utc);
 
 const useStyles = makeStyles((theme) => ({
@@ -52,34 +52,36 @@ function AddPatient(props) {
   };
 
   const selectState = (val) => {
-    setState({...state, state: val});
+    setState({ ...state, state: val });
   };
 
   const selectRegion = (val) => {
-    setState({...state, city: val});
+    setState({ ...state, city: val });
   };
 
   const [state, setState] = useState({
     ssn: 0,
-    name: '',
+    name: "",
     age: 0,
     admited_on: null,
-    type_of_bed: '',
-    address: '',
-    city: '',
-    state: ''
+    type_of_bed: "",
+    address: "",
+    city: "",
+    state: "",
   });
 
-  const onChange = (e) => { 
-    if(e.target.name === "admited_on")
-    {
-      let d = dayjs(e.target.value)
+  const onChange = (e) => {
+    if (e.target.name === "admited_on") {
+      let d = dayjs(e.target.value);
       setState({ ...state, [e.target.name]: d.utc().format() });
       return;
     }
-    setState({ ...state, [e.target.name]: e.target.value }) 
-  }
-  const onSubmit = (e) => { e.preventDefault(); props.addPatient(state);}
+    setState({ ...state, [e.target.name]: e.target.value });
+  };
+  const onSubmit = (e) => {
+    e.preventDefault();
+    props.addPatient(state);
+  };
 
   const classes = useStyles();
   return (
@@ -154,9 +156,9 @@ function AddPatient(props) {
                     label="Type Of Room"
                     required
                   >
-                    <MenuItem value={'Single'}>Single</MenuItem>
-                    <MenuItem value={'Shared'}>Shared</MenuItem>
-                    <MenuItem value={'General'}>General</MenuItem>
+                    <MenuItem value={"Single"}>Single</MenuItem>
+                    <MenuItem value={"Shared"}>Shared</MenuItem>
+                    <MenuItem value={"General"}>General</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -232,8 +234,8 @@ function AddPatient(props) {
   );
 }
 
-AddPatient.propTypes ={
-  addPatient: PropTypes.func.isRequired
-} 
+AddPatient.propTypes = {
+  addPatient: PropTypes.func.isRequired,
+};
 
-export default connect(null, {addPatient})(AddPatient);
+export default connect(null, { addPatient })(AddPatient);

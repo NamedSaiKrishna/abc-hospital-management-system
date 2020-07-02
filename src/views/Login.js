@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { login } from '../redux/actions/auth';
-import { Redirect } from 'react-router-dom';
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { login } from "../redux/actions/auth";
+import { Redirect } from "react-router-dom";
 //MUI
 import { makeStyles } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
@@ -38,17 +38,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Login = (props) => {
-
   const classes = useStyles();
 
   const [state, setState] = useState({});
-  const onChange = (e) => setState({ ...state, [e.target.name]: e.target.value });
-  const onSubmit = (e) => { e.preventDefault(); props.login(state.username, state.password) }
+  const onChange = (e) =>
+    setState({ ...state, [e.target.name]: e.target.value });
+  const onSubmit = (e) => {
+    e.preventDefault();
+    props.login(state.username, state.password);
+  };
 
   if (props.auth.isAuthenticated) {
-    return <Redirect to="/dashboard" />
+    return <Redirect to="/dashboard" />;
   }
-  
+
   return (
     <div>
       <Container component="main" maxWidth="xs">
@@ -83,10 +86,6 @@ const Login = (props) => {
               type="password"
               id="password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
@@ -102,14 +101,14 @@ const Login = (props) => {
       </Container>
     </div>
   );
-}
+};
 
 Login.propTypes = {
-  login: PropTypes.func.isRequired
-}
+  login: PropTypes.func.isRequired,
+};
 
-const mapStateToProps = state => ({
-  auth: state.auth
-})
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
 
 export default connect(mapStateToProps, { login })(Login);
