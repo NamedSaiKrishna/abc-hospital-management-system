@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getPatient } from '../redux/actions/patient';
+import { getPatient, removeMedicinePatient, removeDiagnosticPatient } from '../redux/actions/patient';
 import { getMedicineMaster } from '../redux/actions/masterMedicine';
+import { getDiagnosticMaster } from '../redux/actions/masterDiagnostic';
 
 //MUI
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Dialog, DialogActions, DialogTitle, Box, Button } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -87,20 +88,32 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Dashboard = (props) => {
-  useEffect(()=>{
-    if(props.role === "Desk"){
-      
-    }
-    else if(props.role === "Pharmacist")
-    {
-      props.getMedicineMaster();
-    }
-    else{
+  useEffect(() => {
+    if (props.role === "Desk") {
 
     }
+    else if (props.role === "Pharmacist") {
+      props.getMedicineMaster();
+    }
+    else {
+      props.getDiagnosticMaster();
+    }
   }, [])
+
+  const onConfirm = () => {
+    if (open[0] === "m") {
+      props.removeMedicinePatient(open.slice(1));
+      setOpen(false);
+    }
+    else if (open[0] === "d") {
+      props.removeDiagnosticPatient(open.slice(1));
+      setOpen(false);
+    }
+  }
+
   const classes = useStyles();
   const [search, setSearch] = useState('');
+  const [open, setOpen] = React.useState(false);
   const onChange = (e) => setSearch(e.target.value);
   const onSubmit = (e) => { e.preventDefault(); props.getPatient(search); }
   let roleDashboard =
@@ -272,20 +285,20 @@ const Dashboard = (props) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                    {
+                      {
                         (props.patient.medicines).map((item) => (
                           <TableRow key={item.id}>
                             <TableCell component="th" scope="row">
                               {item.medicines.name}
-                        </TableCell>
-                        <TableCell align="right">{item.quantity}</TableCell>
-                        <TableCell align="right">{item.medicines.rate}</TableCell>
-                        <TableCell align="right">Rs. {item.quantity*item.medicines.rate}</TableCell>
-                        <TableCell align="right">
-                          <IconButton>
-                            <DeleteForeverIcon />
-                          </IconButton>
-                        </TableCell>
+                            </TableCell>
+                            <TableCell align="right">{item.quantity}</TableCell>
+                            <TableCell align="right">{item.medicines.rate}</TableCell>
+                            <TableCell align="right">Rs. {item.quantity * item.medicines.rate}</TableCell>
+                            <TableCell align="right">
+                              <IconButton onClick={() => { setOpen("m" + item.id) }}>
+                                <DeleteForeverIcon />
+                              </IconButton>
+                            </TableCell>
                           </TableRow>
                         ))
                       }
@@ -319,9 +332,9 @@ const Dashboard = (props) => {
                           <TableRow key={item.id}>
                             <TableCell component="th" scope="row">
                               {item.name}
-                        </TableCell>
-                        <TableCell>{item.quantity}</TableCell>
-                        <TableCell>{item.rate}</TableCell>
+                            </TableCell>
+                            <TableCell>{item.quantity}</TableCell>
+                            <TableCell>{item.rate}</TableCell>
                           </TableRow>
                         ))
                       }
@@ -330,7 +343,7 @@ const Dashboard = (props) => {
                 </TableContainer>
               </Paper>
             </Grid>
-            
+
           </Grid>
         </div>
       </React.Fragment>
@@ -401,35 +414,6 @@ const Dashboard = (props) => {
                     </Grid>
                   </Paper>
                 </Grid>
-                <Grid item xs={3}>
-                  <Typography variant="h5" className={classes.mtop}>
-                    Diagnostics Conducted
-              </Typography>
-                  <Paper variant="outlined" className={classes.newPaper}>
-                    <TableContainer
-                      variant="outlined"
-
-                      className={classes.container}
-                    >
-                      <Table aria-label="simple table" size="small">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Name Of Test</TableCell>
-                            <TableCell align="right">Amount</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          <TableRow>
-                            <TableCell component="th" scope="row">
-                              ECG
-                        </TableCell>
-                            <TableCell align="right">Rs. 3000</TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Paper>
-                </Grid>
                 <Grid item xs={6}>
                   <Typography variant="h5" className={classes.mtop}>
                     Diagnostics Cart
@@ -449,21 +433,58 @@ const Dashboard = (props) => {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          <TableRow>
-                            <TableCell component="th" scope="row">
-                              Echo
+                          {
+                            (props.patient.diagnostics).map((item) => (
+                            <TableRow key={item.id}>
+                              <TableCell component="th" scope="row">
+                                {item.diagnostics.name}
                         </TableCell>
-                            <TableCell align="right">Rs. 3000</TableCell>
-                            <TableCell align="right">
-                              <IconButton>
-                                <DeleteForeverIcon />
-                              </IconButton>
-                            </TableCell>
-                          </TableRow>
+                              <TableCell align="right">Rs. {item.diagnostics.rate}</TableCell>
+                              <TableCell align="right">
+                                <IconButton  onClick={() => { setOpen("d" + item.id) }}>
+                                  <DeleteForeverIcon />
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                            ))
+                          }
                         </TableBody>
                       </Table>
                     </TableContainer>
                     <AddDiagnostics />
+                  </Paper>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="h5" className={classes.mtop}>
+                    Diagnostics Available
+              </Typography>
+                  <Paper variant="outlined" className={classes.newPaper}>
+                    <TableContainer
+                      variant="outlined"
+
+                      className={classes.container}
+                    >
+                      <Table aria-label="simple table" size="small">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Name Of Test</TableCell>
+                            <TableCell align="right">Amount</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {
+                            (props.diagnostic_master).map((item) => (
+                              <TableRow key={item.id}>
+                                <TableCell component="th" scope="row">
+                                  {item.name}
+                                </TableCell>
+                                <TableCell align="right">Rs. {item.rate}</TableCell>
+                              </TableRow>
+                            ))
+                          }
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
                   </Paper>
                 </Grid>
               </Grid>
@@ -472,7 +493,33 @@ const Dashboard = (props) => {
         );
   return (
     <div>
-      <Container maxWidth="lg">{roleDashboard}</Container>
+      <Container maxWidth="lg">
+        <Box>
+          <Dialog
+            fullWidth
+            maxWidth="sm"
+            open={open ? true : false}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogTitle id="form-dialog-title">ARE YOU SURE?</DialogTitle>
+            <DialogActions>
+              <Button color="primary" onClick={() => { setOpen(false) }}>
+                Cancel
+            </Button>
+              <Button
+                color="primary"
+                variant="contained"
+                disableElevation
+                type="submit"
+                onClick={onConfirm}
+              >
+                YES
+            </Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
+        <Box>{roleDashboard}</Box>
+      </Container>
     </div>
   );
 }
@@ -483,12 +530,17 @@ Dashboard.propTypes = {
   patient: PropTypes.object.isRequired,
   getMedicineMaster: PropTypes.func.isRequired,
   master_med: PropTypes.array.isRequired,
+  removeMedicinePatient: PropTypes.func.isRequired,
+  removeDiagnosticPatient: PropTypes.func.isRequired,
+  getDiagnosticMaster: PropTypes.func.isRequired,
+  diagnostic_master: PropTypes.array.isRequired,
 }
 
 const mapStateToProps = state => ({
   role: state.auth.user.role,
   patient: state.patient,
   master_med: state.masterMedicine.master,
+  diagnostic_master: state.masterDiagnostic.master,
 })
 
-export default connect(mapStateToProps, { getPatient, getMedicineMaster })(Dashboard);
+export default connect(mapStateToProps, { getPatient, getMedicineMaster, removeMedicinePatient, removeDiagnosticPatient, getDiagnosticMaster })(Dashboard);

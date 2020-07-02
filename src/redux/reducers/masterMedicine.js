@@ -15,7 +15,7 @@ export default (state = initialState, { type, payload }) => {
             return {...state, master: [payload, ...state.master]}
 
         case REMOVE_MEDICINE_MASTER:
-            return {...state, master: (state.master).filter((item)=> item.id !== payload)}
+            return {...state, master: (state.master).filter((item)=> item.id != payload)}
 
         default:
             return state

@@ -26,10 +26,10 @@ export default (state = initialState, { type, payload }) => {
             return { ...state, medicines: [payload, ...state.medicines] }
 
         case REMOVE_DIAGNOSTIC_PATIENT:
-            return { ...state, diagnostics: (state.diagnostics).filter((item) => item.id !== payload) }
+            return { ...state, diagnostics: (state.diagnostics).filter((item) => item.id != payload) }
 
         case REMOVE_MEDICINE_PATIENT:
-            return { ...state, medicines: (state.medicines).filter((item) => item.id !== payload)}
+            return { ...state, medicines: (state.medicines).filter((item) => item.id != payload)}
 
         default:
             return state

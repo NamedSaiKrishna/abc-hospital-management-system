@@ -9,8 +9,9 @@ import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import PropTypes from 'prop-types';
+import { addMedicinePatient } from '../redux/actions/patient';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -43,6 +44,7 @@ function AddMedicine(props) {
   const handleClose = () => {
     setOpen(false);
   };
+  const onSubmit = (e) => { e.preventDefault(); props.addMedicinePatient(props.patient_id); }
 
   const classes = useStyles();
   return (
@@ -54,6 +56,7 @@ function AddMedicine(props) {
         disableElevation
         fullWidth
         className={classes.mtop}
+        disabled = {!props.patient_id}
       >
         Add Medicine
       </Button>
@@ -65,7 +68,7 @@ function AddMedicine(props) {
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">Add Medicines</DialogTitle>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={onSubmit}>
           <DialogContent>
             <DialogContentText>Add Medicine Here</DialogContentText>
             <Grid container spacing={2}>
@@ -108,6 +111,7 @@ function AddMedicine(props) {
               color="primary"
               variant="contained"
               disableElevation
+              type="submit"
             >
               submit
             </Button>
@@ -120,11 +124,14 @@ function AddMedicine(props) {
 
 AddMedicine.propTypes = {
   master_med: PropTypes.array.isRequired,
+  addMedicinePatient: PropTypes.func.isRequired,
+  patient_id: PropTypes.number.isRequired,
 }
 
 
 const mapStateToProps = state => ({
   master_med: state.masterMedicine.master,
+  patient_id: state.patient.id,
 })
 
-export default connect(mapStateToProps)(AddMedicine);
+export default connect(mapStateToProps, { addMedicinePatient })(AddMedicine);

@@ -19,6 +19,8 @@ export class Alerts extends Component {
         if(error.msg.username) alert.error("USERNAME: "+error.msg.username.join());
         if(error.msg.password) alert.error("PASSWORD: "+error.msg.password.join());
         if(error.msg.role) alert.error("ROLE: "+error.msg.role.join());
+        if(error.msg.quantity) alert.error("QUANTITY: "+error.msg.quantity.join());
+        if(error.msg.medicines) alert.error("MEDICINE: "+error.msg.medicines.join());
         }
 
         if(messages !== prevProps.messages){

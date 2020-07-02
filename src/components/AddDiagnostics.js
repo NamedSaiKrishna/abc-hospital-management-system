@@ -8,6 +8,9 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { addDiagnosticPatient } from '../redux/actions/patient';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -31,14 +34,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const top100Films = [
-  { title: "The Shawshank Redemption", year: 1994 },
-  { title: "The Godfather", year: 1972 },
-  { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-];
-function AddDiagnostics() {
+
+function AddDiagnostics(props) {
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -46,6 +43,7 @@ function AddDiagnostics() {
   const handleClose = () => {
     setOpen(false);
   };
+  const onSubmit = (e) => { e.preventDefault(); props.addDiagnosticPatient(props.patient_id); }
 
   const classes = useStyles();
   return (
@@ -57,6 +55,7 @@ function AddDiagnostics() {
         disableElevation
         fullWidth
         className={classes.mtop}
+        disabled = {!props.patient_id}
       >
         Add Diagnostics
       </Button>
@@ -68,14 +67,14 @@ function AddDiagnostics() {
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">Add Diagnostics</DialogTitle>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={onSubmit}>
           <DialogContent>
             <DialogContentText>Add Diagnosis Here</DialogContentText>
             <Autocomplete
               size="small"
               fullWidth
               id="combo-box-demo"
-              options={top100Films}
+              options={props.diagnostic_master}
               getOptionLabel={(option) => option.title}
               renderInput={(params) => (
                 <TextField
@@ -95,6 +94,7 @@ function AddDiagnostics() {
               color="primary"
               variant="contained"
               disableElevation
+              type="submit"
             >
               submit
             </Button>
@@ -105,4 +105,15 @@ function AddDiagnostics() {
   );
 }
 
-export default AddDiagnostics;
+AddDiagnostics.propTypes = {
+  patient_id: PropTypes.number.isRequired,
+  diagnostic_master: PropTypes.array.isRequired,
+  addDiagnosticPatient: PropTypes.func.isRequired,
+}
+
+const mapStateToProps = (state) => ({
+  patient_id: state.patient.id,
+  diagnostic_master: state.masterDiagnostic.master,
+})
+
+export default connect(mapStateToProps, {addDiagnosticPatient})(AddDiagnostics);

@@ -6,7 +6,8 @@ import {
   REMOVE_MEDICINE_PATIENT,
   GET_ALL_PATIENTS,
   DELETE_PATIENT,
-  GET_ERRORS
+  GET_ERRORS,
+  GET_MESSAGES
 } from "./types";
 import axios from "axios";
 import { tokenConfig } from "./auth";
@@ -39,11 +40,15 @@ export const addMedicinePatient = (medicine, patient, quantity) => (
   const body = JSON.stringify({ medicine, patient, quantity });
 
   axios
-    .post(`${process.env.REACT_APP_API_URL}/api/medicines`, body, tokenConfig(getState))
+    .post(`${process.env.REACT_APP_API_URL}/api/medicines/`, body, tokenConfig(getState))
     .then((res) => {
       dispatch({
         type: ADD_MEDICINE_PATIENT,
         payload: res.data,
+      });
+      dispatch({
+        type: GET_MESSAGES,
+        payload: "ADDED"
       });
     })
     .catch((err) => {
@@ -65,7 +70,7 @@ export const addDiagnosticPatient = (diagnostic, patient) => (
   const body = JSON.stringify({ diagnostic, patient });
   axios
     .post(
-      `${process.env.REACT_APP_API_URL}/api/diagnostics`,
+      `${process.env.REACT_APP_API_URL}/api/diagnostics/`,
       body,
       tokenConfig(getState)
     )
@@ -73,6 +78,10 @@ export const addDiagnosticPatient = (diagnostic, patient) => (
       dispatch({
         type: ADD_DIAGNOSTIC_PATIENT,
         payload: res.data,
+      });
+      dispatch({
+        type: GET_MESSAGES,
+        payload: "ADDED"
       });
     })
     .catch((err) => {
@@ -98,6 +107,10 @@ export const removeMedicinePatient = (id) => (dispatch, getState) => {
         type: REMOVE_MEDICINE_PATIENT,
         payload: id,
       });
+      dispatch({
+        type: GET_MESSAGES,
+        payload: "DELETED"
+      });
     })
     .catch((err) => {
       const error = {
@@ -121,6 +134,10 @@ export const removeDiagnosticPatient = (id) => (dispatch, getState) => {
       dispatch({
         type: REMOVE_DIAGNOSTIC_PATIENT,
         payload: id,
+      });
+      dispatch({
+        type: GET_MESSAGES,
+        payload: "DELETED"
       });
     })
     .catch((err) => {
