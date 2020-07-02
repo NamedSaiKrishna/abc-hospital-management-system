@@ -20,10 +20,10 @@ export default (state = initialState, { type, payload }) => {
             return { ...payload }
 
         case ADD_DIAGNOSTIC_PATIENT:
-            return { ...state, diagnostics: [payload, ...state.diagnostics] }
+            return { ...state, diagnostics: [{...payload, fresh: true}, ...state.diagnostics] }
 
         case ADD_MEDICINE_PATIENT:
-            return { ...state, medicines: [payload, ...state.medicines] }
+            return { ...state, medicines: [{...payload, fresh: true}, ...state.medicines] }
 
         case REMOVE_DIAGNOSTIC_PATIENT:
             return { ...state, diagnostics: (state.diagnostics).filter((item) => item.id !== Number(payload)) }

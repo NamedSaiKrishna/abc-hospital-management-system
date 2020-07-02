@@ -14,10 +14,10 @@ export default (state = initialState, { type, payload }) => {
             return { ...state, result: (state.result).filter((item) => item.id !== Number(payload)) }
 
         case ADD_PATIENT:
-            return { ...state, result: [...state.result, payload]}
+            return { ...state, result: [{...payload, fresh: true}, ...state.result]}
 
         case UPDATE_PATIENT:
-            return { ...state, result: (state.result).map((item)=>{if(item.id === payload.id){return(payload);}else{return(item);}})}
+            return { ...state, result: (state.result).map((item)=>{if(item.id === payload.id){return({...payload, fresh: true});}else{return(item);}})}
 
         default:
             return state

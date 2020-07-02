@@ -1,7 +1,7 @@
 import { GET_MESSAGES } from '../actions/types';
 
 const initialState ={
-    msg: {}
+    msg: "Thank You!"
 }
 
 export default function (state = initialState, action){

@@ -26,7 +26,22 @@ export const getDiagnosticMaster = () => (dispatch, getState) => {
 }
 
 
-export const addDiagnosticMaster = (name, rate) => (dispatch, getState) => {
+export const addDiagnosticMaster = ({name, rate}) => (dispatch, getState) => {
+
+
+    if(rate <= 0){
+
+        const error = {
+            msg: "Please enter a valid rate",
+            status: 10401
+        };
+        dispatch({
+            type: GET_ERRORS,
+            payload: error
+        });
+        return;
+
+    }
 
     const body = JSON.stringify({ name, rate });
 

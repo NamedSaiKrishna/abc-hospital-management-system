@@ -10,7 +10,7 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { addMedicineMaster } from "../redux/actions/masterMedicine";
+import { addDiagnosticMaster } from "../redux/actions/masterDiagnostic";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -38,7 +38,6 @@ function AddNewMedicine(props) {
   const [open, setOpen] = useState(false);
   const [state, setState] = useState({
     name: "",
-    quantity: 0,
     rate: 0,
   });
   const handleClickOpen = () => {
@@ -52,14 +51,13 @@ function AddNewMedicine(props) {
   };
   const onSubmit = (e) => {
     e.preventDefault();
-    props.addMedicineMaster(state);
+    props.addDiagnosticMaster(state);
   };
 
   useEffect(() => {
     return () => {
       setState({
         name: "",
-        quantity: 0,
         rate: 0,
       });
     };
@@ -85,10 +83,10 @@ function AddNewMedicine(props) {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Add New Medicines</DialogTitle>
+        <DialogTitle id="form-dialog-title">Add New Test</DialogTitle>
         <form className={classes.form} noValidate onSubmit={onSubmit}>
           <DialogContent>
-            <DialogContentText>Add Medicine Here</DialogContentText>
+            <DialogContentText>Add Test Here</DialogContentText>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -141,9 +139,9 @@ function AddNewMedicine(props) {
 }
 
 AddNewMedicine.propTypes = {
-  addMedicineMaster: PropTypes.func.isRequired,
+  addDiagnosticMaster: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({});
 
-export default connect(mapStateToProps, { addMedicineMaster })(AddNewMedicine);
+export default connect(mapStateToProps, { addDiagnosticMaster })(AddNewMedicine);

@@ -9,7 +9,8 @@ import {
   GET_ERRORS,
   REGISTRATION_SUCCESS,
   REGISTRATION_FAIL,
-  GET_MESSAGES
+  GET_MESSAGES,
+  CLEAR
 } from "./types";
 
 export const loadUser = () => (dispatch, getState) => {
@@ -81,6 +82,9 @@ export const login = (username, password) => (dispatch) => {
 export const logout = () => (dispatch, getState) => {
   dispatch({
     type: LOGOUT_USER,
+  });
+  dispatch({
+    type: CLEAR
   });
 };
 

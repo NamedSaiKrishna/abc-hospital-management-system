@@ -12,7 +12,7 @@ export default (state = initialState, { type, payload }) => {
             return { ...state, master: payload }
 
         case ADD_MEDICINE_MASTER:
-            return { ...state, master: [payload, ...state.master] }
+            return { ...state, master: [{...payload, fresh: true}, ...state.master] }
 
         case REMOVE_MEDICINE_MASTER:
             return { ...state, master: (state.master).filter((item) => item.id !== Number(payload)) }

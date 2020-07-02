@@ -6,8 +6,9 @@ import patient from './patient';
 import allPatients from './allPatients';
 import masterDiagnostic from './masterDiagnostic';
 import masterMedicine from './masterMedicine';
+import { CLEAR } from '../actions/types';
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
     auth,
     errors,
     messages,
@@ -15,8 +16,16 @@ const rootReducer = combineReducers({
     allPatients,
     masterDiagnostic,
     masterMedicine,
-    
-});
+  })
+  
+const initialState = appReducer({}, {})
+  
+const rootReducer = (state, action) => {
+    if (action.type === CLEAR) {
+      state = initialState
+    }
+  
+    return appReducer(state, action)
+  }
 
-
-export default (state, action) => rootReducer(action.type === 'LOGOUT_USER' ? undefined : state, action);
+export default rootReducer

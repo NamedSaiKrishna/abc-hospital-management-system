@@ -60,7 +60,8 @@ function AddNewMedicine(props) {
         name: '',
         quantity: 0,
         rate: 0
-      })
+      });
+      setOpen(false);
     }
   }, [])
 

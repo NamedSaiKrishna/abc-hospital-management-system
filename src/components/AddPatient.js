@@ -90,9 +90,9 @@ function AddPatient(props) {
 
   const onChange = (e) => {
     if (e.target.name === "admited_on") {
-      let d = dayjs(e.target.value);
-      setState({ ...state, [e.target.name]: d.utc().format() });
       setDisplay(e.target.value);
+      let d = dayjs(display);
+      setState({ ...state, [e.target.name]: d.utc().format() });
       return;
     }
     setState({ ...state, [e.target.name]: e.target.value });

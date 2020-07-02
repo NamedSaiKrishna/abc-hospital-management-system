@@ -186,7 +186,7 @@ export const removeDiagnosticPatient = (id) => (dispatch, getState) => {
     });
 };
 
-export const updatePatient = (b, id) => (dispatch, getState) => {
+export const updatePatient = (b, id, d) => (dispatch, getState) => {
   const body = JSON.stringify(b);
   axios
     .put(
@@ -205,7 +205,7 @@ export const updatePatient = (b, id) => (dispatch, getState) => {
       });
       dispatch({
         type: GET_MESSAGES,
-        payload: "UPDATED"
+        payload: d? "PATIENT DISCHARGED" : "UPDATED"
       });
     })
     .catch((err) => {

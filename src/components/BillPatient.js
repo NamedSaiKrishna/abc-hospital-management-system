@@ -17,6 +17,9 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import {connect} from 'react-redux';
+import {updatePatient} from '../redux/actions/patient';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,17 +41,55 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function BillPatient() {
+function BillPatient(props) {
   const [open, setOpen] = React.useState(false);
-
+  const patient = props.patient;
   const handleClickOpen = () => {
     setOpen(true);
   };
-
+  const m_bill = (patient.medicines).reduce((acc, value) => { return acc + Number(value.quantity * value.medicines.rate) }, 0)
+  const d_bill = (patient.diagnostics).reduce((acc, value) => { return acc + Number(value.diagnostics.rate) }, 0)
   const handleClose = () => {
     setOpen(false);
   };
+  const date = (utc_format) => {
+    return new Date(utc_format).toDateString();
+  };
+
+  const cur_date = () => {
+    const dayjs = require('dayjs');
+    let now = dayjs();
+    return now.format("ddd MMMM D YYYY");
+  };
+
+  const discharged = () => {
+    props.updatePatient({discharged: true}, patient.id, true);
+    setOpen(false);
+  }
+  const difference = (d1, d2) => {
+    const dayjs = require('dayjs');
+
+    const date1 = dayjs(d1);
+    const date2 = dayjs(d2);
+    const ans = date2.diff(date1, "day");
+    if (ans === 0) { return 1; }
+    return ans;
+  }
+
+  const roomPrice = (days, type) => {
+    if (type === "General") {
+      return (2000 * days);
+    }
+    else if (type === "Shared") {
+      return (4000 * days);
+    }
+    else {
+      return (8000 * days);
+    }
+  }
+
   const classes = useStyles();
+
   return (
     <div>
       <IconButton onClick={handleClickOpen}>
@@ -64,152 +105,161 @@ function BillPatient() {
       >
         <DialogTitle id="alert-dialog-title">Patient Billing</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            <Grid container className={classes.root} spacing={2}>
-              <Grid item xs={12}>
-                <Typography variant="subtitle1" className={classes.mtop}>
-                  Patient Details
+          <DialogContentText id="alert-dialog-description"></DialogContentText>
+          <Grid container className={classes.root} spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" className={classes.mtop}>
+                Patient Details
                 </Typography>
-                <Paper className={classes.newPaper} variant="outlined">
-                  <TableContainer className={classes.container}>
-                    <Table aria-label="simple table" size="small">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Patient Id</TableCell>
-                          <TableCell align="right">Name</TableCell>
-                          <TableCell align="right">Age</TableCell>
-                          <TableCell align="right">Address</TableCell>
-                          <TableCell align="right">DOJ</TableCell>
-                          <TableCell align="right">Date Of Discharge</TableCell>
-                          <TableCell align="right">Type Of Room</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell component="th" scope="row">
-                            1234
-                          </TableCell>
-                          <TableCell align="right">Joseph</TableCell>
-                          <TableCell align="right">56</TableCell>
-                          <TableCell align="right">
-                            Rick Street, Ameerpet, Hyderbad
-                          </TableCell>
-                          <TableCell align="right">03-may-2020</TableCell>
-                          <TableCell align="right">10-may-2020</TableCell>
-                          <TableCell align="right">Single</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Paper>
-              </Grid>
-              <Grid item xs={8}>
-                <Typography variant="subtitle1" className={classes.mtop}>
-                  Pharmacy Charges
-                </Typography>
-                <Paper className={classes.newPaper} variant="outlined">
-                  <TableContainer className={classes.container}>
-                    <Table aria-label="simple table" size="small">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Medicine</TableCell>
-                          <TableCell align="right">Quantity</TableCell>
-                          <TableCell align="right">Rate</TableCell>
-                          <TableCell align="right">Amount</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell component="th" scope="row">
-                            Acebutolol
-                          </TableCell>
-                          <TableCell align="right">10</TableCell>
-                          <TableCell align="right">Rs. 55</TableCell>
-                          <TableCell align="right">Rs. 550 </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Paper>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography variant="subtitle1" className={classes.mtop}>
-                  Diagnostics Charges
-                </Typography>
-                <Paper className={classes.newPaper} variant="outlined">
-                  <TableContainer className={classes.container}>
-                    <Table aria-label="simple table" size="small">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Name Of The Test</TableCell>
-                          <TableCell align="right">Amount</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell component="th" scope="row">
-                            ECG
-                          </TableCell>
-                          <TableCell align="right">Rs. 3000</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Paper>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography variant="subtitle1" className={classes.mtop}>
-                  Sub Total
-                </Typography>
-                <Paper className={classes.newPaper} variant="outlined">
-                  <TableContainer className={classes.container}>
-                    <Table aria-label="simple table" size="small">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Service</TableCell>
-                          <TableCell align="right">Amount</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell component="th" scope="row">
-                            Room(7)
-                          </TableCell>
-                          <TableCell align="right">Rs. 3000</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell component="th" scope="row">
-                            Pharmacy
-                          </TableCell>
-                          <TableCell align="right">Rs. 3000</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell component="th" scope="row">
-                            Diagnostics
-                          </TableCell>
-                          <TableCell align="right">Rs. 3000</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Paper>
-              </Grid>
-              <Grid item xs={8}>
-                <Paper className={classes.paper} variant="outlined">
-                  <Typography variant="h4" align="right">
-                    Grand Total: 9000
-                  </Typography>
-                </Paper>
-              </Grid>
+              <Paper className={classes.newPaper} variant="outlined">
+                <TableContainer className={classes.container}>
+                  <Table aria-label="simple table" size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Patient Id</TableCell>
+                        <TableCell align="right">Name</TableCell>
+                        <TableCell align="right">Age</TableCell>
+                        <TableCell align="right">Address</TableCell>
+                        <TableCell align="right">DOJ</TableCell>
+                        <TableCell align="right">Date Of Discharge</TableCell>
+                        <TableCell align="right">Type Of Room</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell component="th" scope="row">
+                          {patient.id}
+                        </TableCell>
+                        <TableCell align="right">{patient.name}</TableCell>
+                        <TableCell align="right">{patient.age}</TableCell>
+                        <TableCell align="right">
+                          {patient.address}
+                        </TableCell>
+                        <TableCell align="right">{date(patient.admited_on)}</TableCell>
+                        <TableCell align="right">{cur_date()}</TableCell>
+                        <TableCell align="right">{patient.type_of_bed}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
             </Grid>
-          </DialogContentText>
+            <Grid item xs={8}>
+              <Typography variant="subtitle1" className={classes.mtop}>
+                Pharmacy Charges
+                </Typography>
+              <Paper className={classes.newPaper} variant="outlined">
+                <TableContainer className={classes.container}>
+                  <Table aria-label="simple table" size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Medicine</TableCell>
+                        <TableCell align="right">Quantity</TableCell>
+                        <TableCell align="right">Rate</TableCell>
+                        <TableCell align="right">Amount</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {patient.medicines.map((item) => (
+                        <TableRow key={item.id}>
+                          <TableCell component="th" scope="row">
+                            {item.medicines.name}
+                          </TableCell>
+                          <TableCell align="right">{item.quantity}</TableCell>
+                          <TableCell align="right">
+                            {item.medicines.rate}
+                          </TableCell>
+                          <TableCell align="right">
+                            Rs. {item.quantity * item.medicines.rate}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </Grid>
+            <Grid item xs={4}>
+              <Typography variant="subtitle1" className={classes.mtop}>
+                Diagnostics Charges
+                </Typography>
+              <Paper className={classes.newPaper} variant="outlined">
+                <TableContainer className={classes.container}>
+                  <Table aria-label="simple table" size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Name Of The Test</TableCell>
+                        <TableCell align="right">Amount</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {patient.diagnostics.map((item) => (
+                        <TableRow key={item.id}>
+                          <TableCell component="th" scope="row">
+                            {item.diagnostics.name}
+                          </TableCell>
+                          <TableCell align="right">
+                            Rs. {item.diagnostics.rate}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </Grid>
+            <Grid item xs={4}>
+              <Typography variant="subtitle1" className={classes.mtop}>
+                Sub Total
+                </Typography>
+              <Paper className={classes.newPaper} variant="outlined">
+                <TableContainer className={classes.container}>
+                  <Table aria-label="simple table" size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Service</TableCell>
+                        <TableCell align="right">Amount</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell component="th" scope="row">
+                          Room({difference(date(patient.admited_on), cur_date())})
+                          </TableCell>
+                        <TableCell align="right">Rs. {roomPrice(Number(difference(date(patient.admited_on), cur_date())), patient.type_of_bed)}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell component="th" scope="row">
+                          Pharmacy
+                          </TableCell>
+                        <TableCell align="right">Rs. {m_bill}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell component="th" scope="row">
+                          Diagnostics
+                          </TableCell>
+                        <TableCell align="right">Rs. {d_bill}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </Grid>
+            <Grid item xs={8}>
+              <Paper className={classes.paper} variant="outlined">
+                <Typography variant="h4" align="right">
+                  Grand Total: Rs. {m_bill + d_bill + roomPrice(Number(difference(date(patient.admited_on), cur_date())), patient.type_of_bed)}
+                </Typography>
+              </Paper>
+            </Grid>
+          </Grid>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             cancel
           </Button>
           <Button
-            onClick={handleClose}
+            onClick={discharged}
             color="primary"
             autoFocus
             variant="contained"
@@ -217,7 +267,7 @@ function BillPatient() {
           >
             Confirm
           </Button>
-          <Button onClick={handleClose} color="primary" variant="outlined">
+          <Button onClick={() => window.print()} color="primary" variant="outlined">
             Print Bill
           </Button>
         </DialogActions>
@@ -226,4 +276,9 @@ function BillPatient() {
   );
 }
 
-export default BillPatient;
+BillPatient.propTypes = {
+  updatePatient: PropTypes.func.isRequired
+}
+
+
+export default connect(null, {updatePatient})(BillPatient);
