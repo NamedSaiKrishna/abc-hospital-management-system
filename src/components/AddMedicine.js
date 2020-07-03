@@ -55,7 +55,7 @@ function AddMedicine(props) {
     setOpen(false);
   };
   const onChange = (event, newValue) => { if (newValue != null) { setID(newValue.id); } }
-  const onSubmit = (e) => { e.preventDefault(); props.addMedicinePatient(id, props.patient_id, quantity); }
+  const onSubmit = (e) => { e.preventDefault(); props.addMedicinePatient(id, props.patient_id, quantity);  setID(null); setOpen(false);}
 
   const classes = useStyles();
   return (
@@ -122,7 +122,6 @@ function AddMedicine(props) {
               Cancel
             </Button>
             <Button
-              onClick={handleClose}
               color="primary"
               variant="contained"
               disableElevation

@@ -54,7 +54,7 @@ function AddDiagnostics(props) {
     setOpen(false);
   };
   const onChange = (event, newValue) => { if (newValue != null) { setID(newValue.id); } }
-  const onSubmit = (e) => { e.preventDefault(); props.addDiagnosticPatient(id, props.patient_id); }
+  const onSubmit = (e) => { e.preventDefault(); props.addDiagnosticPatient(id, props.patient_id); setID(null); setOpen(false);}
 
   const classes = useStyles();
   return (
@@ -88,6 +88,7 @@ function AddDiagnostics(props) {
               options={props.diagnostic_master}
               onChange={onChange}
               getOptionLabel={(option) => option.name}
+              getOptionSelected={option => option.id}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -102,7 +103,6 @@ function AddDiagnostics(props) {
               Cancel
             </Button>
             <Button
-              onClick={handleClose}
               color="primary"
               variant="contained"
               disableElevation

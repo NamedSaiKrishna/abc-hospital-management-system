@@ -172,7 +172,7 @@ const Dashboard = (props) => {
   const handleSwitchChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     checkedB: true,
   });
 
@@ -261,7 +261,10 @@ const Dashboard = (props) => {
                   </TableHead>
                   <TableBody>
                     {!submitted ? (
-                      props.allPatients.map((item) => (
+                      props.allPatients.map((item) => {
+
+                        if(state.checkedB){
+                          return(
                         <TableRow
                           key={item.id}
                           style={
@@ -300,8 +303,59 @@ const Dashboard = (props) => {
                             <BillPatient patient={item} />
                           </TableCell>
                         </TableRow>
-                      ))
-                    ) : props.patient.id ? (
+                      )}
+                    
+                    else{
+                      if(!item.discharged){
+                        return(
+                          <TableRow
+                            key={item.id}
+                            style={
+                              item.discharged
+                                ? { background: "#fff44f" }
+                                : item.fresh
+                                ? { background: "#00FF7F" }
+                                : {}
+                            }
+                          >
+                            <TableCell component="th" scope="row">
+                              {item.id}
+                            </TableCell>
+                            <TableCell align="right">{item.name}</TableCell>
+                            <TableCell align="right">{item.age}</TableCell>
+                            <TableCell align="right">{item.address}</TableCell>
+                            <TableCell align="right">
+                              {date(item.admited_on)}
+                            </TableCell>
+                            <TableCell align="right">
+                              {item.type_of_bed}
+                            </TableCell>
+                            <TableCell align="right">
+                              <UpdatePatient patient={item} />
+                            </TableCell>
+                            <TableCell align="right">
+                              <IconButton
+                                onClick={() => {
+                                  setOpen("p" + item.id);
+                                }}
+                              >
+                                <DeleteForeverIcon />
+                              </IconButton>
+                            </TableCell>
+                            <TableCell align="right">
+                              <BillPatient patient={item} />
+                            </TableCell>
+                          </TableRow>
+                        )
+                      }
+                      else{
+                        return null;
+                      }
+                    }
+                    
+                    
+                    })
+                    ) : props.patient.id && ((state.checkedB && props.patient.discharged) || (!props.patient.discharged)) ? (
                       <TableRow
                         key={props.patient.id}
                         style={
