@@ -42,6 +42,8 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import CachedIcon from "@material-ui/icons/Cached";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
 
 //Components
 import { AddPatient } from "../components";
@@ -142,7 +144,7 @@ const Dashboard = (props) => {
     } else {
       props.getDiagnosticMaster();
     }
-  }, []);// eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onConfirm = () => {
     if (open[0] === "m") {
@@ -166,6 +168,13 @@ const Dashboard = (props) => {
   const date = (utc_format) => {
     return new Date(utc_format).toDateString();
   };
+
+  const handleSwitchChange = (event) => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+  };
+  const [state, setState] = React.useState({
+    checkedB: true,
+  });
 
   const classes = useStyles();
   const [search, setSearch] = useState("");
@@ -212,6 +221,17 @@ const Dashboard = (props) => {
               >
                 <CachedIcon />
               </IconButton>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={state.checkedB}
+                    onChange={handleSwitchChange}
+                    name="checkedB"
+                    color="primary"
+                  />
+                }
+                label="Include Discharged Patients"
+              />
               <span className={classes.spacer} />
               <AddPatient />
             </div>
@@ -220,10 +240,7 @@ const Dashboard = (props) => {
               Patient Details
             </Typography>
             <Paper className={classes.newPaper} variant="outlined">
-              <TableContainer
-                variant="outlined"
-                className={classes.ncontainer}
-              >
+              <TableContainer variant="outlined" className={classes.ncontainer}>
                 <Table
                   className={classes.table}
                   aria-label="simple table"
