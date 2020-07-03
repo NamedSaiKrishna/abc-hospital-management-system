@@ -42,10 +42,10 @@ const useStyles = makeStyles((theme) => ({
 const SignUp = (props) => {
   const classes = useStyles();
   const [state, setState] = useState({
-    name: "",
-    username: "",
-    password: "",
-    role: "",
+    name: null,
+    username: null,
+    password: null,
+    role: 'Desk',
   });
   const onChange = (e) =>
     setState({ ...state, [e.target.name]: e.target.value });
